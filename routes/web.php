@@ -14,3 +14,5 @@ Route::get('/admin/verifikasi-alumni', [AdminViewController::class, 'verifikasi_
 Route::get('/admin/data-alumni', [AdminViewController::class, 'data_alumni'])->name('admin.data-alumni');
 Route::get('/admin/kelola-kuisioner', [AdminViewController::class, 'kelola_kuisioner'])->name('admin.kelola-kuisioner');
 Route::get('/admin/respon-kuisioner', [AdminViewController::class, 'respon_kuisioner'])->name('admin.respon-kuisioner');
+
+Route::get('kuisioner/jawab', [UserViewController::class, 'kuis']);

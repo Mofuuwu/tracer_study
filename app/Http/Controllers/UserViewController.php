@@ -18,4 +18,18 @@ class UserViewController extends Controller
     public function kuisioner() {
         return view('user.kuisioner');
     }
+    public function kuis() {
+            $pertanyaan = [
+                "Bagaimana pengalaman Anda selama kuliah?",
+                "Apakah ilmu yang Anda pelajari relevan dengan pekerjaan Anda saat ini?",
+                "Apakah Anda memiliki saran untuk peningkatan kualitas pendidikan?",
+                "Bagaimana pendapat Anda tentang fasilitas kampus?",
+                "Apakah ada program studi lanjut yang Anda minati?",
+                "Apakah ada program studi lanjut yang Anda minati?",
+                "Apakah ada program studi lanjut yang Anda minati?",
+                "Apakah ada program studi lanjut yang Anda minati?",
+                "Apakah ada program studi lanjut yang Anda minati?",
+            ];
+        return view('user.kuisioner.kuisioner-template', compact('pertanyaan'));
+    }
 }

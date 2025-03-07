@@ -1,6 +1,9 @@
 <div class="flex">
+<button id="menu-toggle" class="fixed top-4 right-4 z-50 bg-blue-900 text-white px-6 py-3 rounded-lg md:hidden">
+        ☰
+    </button>
         <!-- Sidebar -->
-        <div class="w-64 bg-blue-900 text-white min-h-screen p-5">
+        <div id="sidebar" class="fixed md:relative w-64 bg-blue-900 text-white min-h-screen p-5 transform -translate-x-full md:translate-x-0 transition-transform">
             <h2 class="text-xl font-bold mb-6">Tracer Study</h2>
             <ul>
                 <li class="mb-4">
@@ -21,3 +24,14 @@
             </ul>
         </div>
     </div>
+
+    
+<!-- jQuery untuk Toggle Sidebar -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $("#menu-toggle").click(function() {
+            $("#sidebar").toggleClass("-translate-x-full");
+        });
+    });
+</script>
