@@ -65,13 +65,6 @@
             </form>
         </div>
     </div>
-
-    <!-- Tombol Logout -->
-    <div class="mt-6 flex justify-end">
-        <button class="bg-red-600 text-white px-5 py-3 rounded-lg shadow-md hover:bg-red-700 transition">
-            Logout
-        </button>
-    </div>
 </div>
 
 

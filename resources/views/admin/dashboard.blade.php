@@ -2,9 +2,14 @@
 
 <div class="flex bg-gray-100 min-h-screen">
     @include('components.admin.sidebar')
-
+    
     <div class="w-full flex-1 p-6 min-h-screen">
         <h1 class="text-2xl font-bold text-gray-800 mb-4">Dashboard Admin</h1>
+        <div class="mt-6 flex justify-end">
+            <a href="{{ route('logout') }}" class="bg-red-600 text-white px-5 py-3 rounded-lg shadow-md hover:bg-red-700 transition">
+                Logout
+            </a>
+        </div>
 
         <!-- Ringkasan Data -->
         <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">

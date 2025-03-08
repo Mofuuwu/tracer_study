@@ -70,4 +70,14 @@ class AuthController extends Controller
             return back()->with('error', 'Registrasi gagal, silakan coba lagi.');
         }
     }
+
+    public function logout(Request $request)
+    {
+        Auth::logout();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->route('login')->with('success', 'Anda telah logout.');
+    }
 }
