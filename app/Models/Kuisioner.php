@@ -9,6 +9,7 @@ class Kuisioner extends Model
 {
     /** @use HasFactory<\Database\Factories\KuisionerFactory> */
     use HasFactory;
+    protected $table = 'kuisioner';
     protected $guarded = [];
     public function jawaban_mahasiswa () {
         return $this->hasMany(JawabanMahasiswa::class, 'kuisioner_id');

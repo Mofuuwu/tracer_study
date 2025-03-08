@@ -9,6 +9,7 @@ class JawabanMahasiswa extends Model
 {
     /** @use HasFactory<\Database\Factories\JawabanMahasiswaFactory> */
     use HasFactory;
+    protected $table = 'jawaban_mahasiswa';
     protected $guarded = [];
     public function mahasiswa() {
         return $this->belongsTo(Mahasiswa::class, 'mahasiswa_id');

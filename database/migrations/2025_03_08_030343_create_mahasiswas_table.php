@@ -14,19 +14,20 @@ return new class extends Migration
         Schema::create('mahasiswa', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id')->unique();
-            $table->string('nim', 20)->unique();
-            $table->string('nama', 255);
+            $table->string('nim', 20)->unique()->nullable();
+            $table->string('nama', 255)->nullable();
             $table->string('email', 255)->unique();
-            $table->string('no_hp', 15);
-            $table->text('alamat');
-            $table->enum('jenis_kelamin', ['Laki-laki', 'Perempuan']);
-            $table->date('tgl_lahir');
-            $table->year('angkatan');
-            $table->string('prodi', 255);
-            $table->string('fakultas', 255);
-            $table->integer('semester');
-            $table->enum('status', ['aktif', 'lulus', 'dropout'])->default('aktif');
+            $table->string('no_hp', 15)->nullable();
+            $table->text('alamat')->nullable();
+            $table->enum('jenis_kelamin', ['Laki-laki', 'Perempuan'])->nullable();
+            $table->date('tgl_lahir')->nullable();
+            $table->year('angkatan')->nullable();
+            $table->string('prodi', 255)->nullable();
+            $table->string('fakultas', 255)->nullable();
+            $table->integer('semester')->nullable();
+            $table->enum('status', ['aktif', 'lulus', 'dropout'])->default('aktif')->nullable();
             $table->string('pekerjaan', 255)->nullable();
+            $table->boolean('verified')->default(false);
             $table->timestamps();
         });
     }

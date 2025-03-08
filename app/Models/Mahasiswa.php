@@ -9,6 +9,7 @@ class Mahasiswa extends Model
 {
     /** @use HasFactory<\Database\Factories\MahasiswaFactory> */
     use HasFactory;
+    protected $table = 'mahasiswa';
     protected $guarded = [];
     public function user() {
         return $this->belongsTo(User::class, 'user_id');
