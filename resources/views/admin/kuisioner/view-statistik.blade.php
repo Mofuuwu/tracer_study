@@ -5,7 +5,11 @@
 
     <section class="w-full flex-1 p-6">
         <h1 class="text-2xl font-bold">📊 Statistik Kuisioner</h1>
-        <p class="text-gray-600 mb-6">Analisis hasil kuisioner yang telah dijawab oleh mahasiswa.</p>
+        <p class="text-gray-600 ">Analisis hasil kuisioner yang telah dijawab oleh mahasiswa.</p>
+        <a href="./" 
+            class=" mb-6 mt-6 inline-block bg-blue-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-700 transition">
+            Kembali
+        </a>
 
         <!-- Total Siswa yang Menjawab -->
         <div class="bg-white shadow-md p-6 rounded-lg border-l-4 border-blue-500 mb-6">
