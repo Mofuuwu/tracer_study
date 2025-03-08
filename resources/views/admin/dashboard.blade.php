@@ -1,9 +1,9 @@
 @include('components.start-html')
 
-<div class="flex">
+<div class="flex bg-gray-100 min-h-screen">
     @include('components.admin.sidebar')
 
-    <div class="flex-1 p-6 bg-gray-100 min-h-screen">
+    <div class="w-full flex-1 p-6 min-h-screen">
         <h1 class="text-2xl font-bold text-gray-800 mb-4">Dashboard Admin</h1>
 
         <!-- Ringkasan Data -->

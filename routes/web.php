@@ -16,3 +16,8 @@ Route::get('/admin/kelola-kuisioner', [AdminViewController::class, 'kelola_kuisi
 Route::get('/admin/respon-kuisioner', [AdminViewController::class, 'respon_kuisioner'])->name('admin.respon-kuisioner');
 
 Route::get('kuisioner/jawab', [UserViewController::class, 'kuis']);
+
+Route::get('admin/kelola-kuisioner/1', [AdminViewController::class, 'kelola_isi_kuisioner']);
+Route::get('/admin/respon-kuisioner/id', [AdminViewController::class, 'lihat_siswa_merespons']);
+Route::get('/admin/respon-kuisioner/id/siswa', [AdminViewController::class, 'lihat_respon_siswa']);
+Route::get('/admin/respon-kuisioner/id/statistik', [AdminViewController::class, 'lihat__statistik_respon']);

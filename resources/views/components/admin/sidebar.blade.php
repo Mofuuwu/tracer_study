@@ -1,3 +1,4 @@
+@include('components.start-html')
 <div class="flex">
 <button id="menu-toggle" class="fixed top-4 right-4 z-50 bg-blue-900 text-white px-6 py-3 rounded-lg md:hidden">
         ☰
@@ -25,7 +26,8 @@
         </div>
     </div>
 
-    
+@include('components.end-html')
+
 <!-- jQuery untuk Toggle Sidebar -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
