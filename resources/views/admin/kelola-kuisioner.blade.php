@@ -6,10 +6,16 @@
     <section class="w-full flex-1 p-6">
         <h1 class="text-2xl font-bold">Kelola Kuisioner</h1>
         <p class="text-gray-600 mb-6">Pilih kuisioner untuk melihat dan mengelola data.</p>
-        
+        @if(session('success'))
+        <div class="w-full">
+            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
+                <strong>Sukses!</strong> {{ session('success') }}
+            </div>
+        </div>
+        @endif
         <!-- Tombol Buat Kuisioner -->
         <button onclick="toggleModal(true)" 
-            class="bg-green-600 text-white px-3 py-2 rounded-lg shadow-md hover:bg-green-700 transition">
+            class="bg-green-600 text-white px-3 py-2 rounded-lg shadow-md hover:bg-green-700 transition cursor-pointer">
             Buat Kuisioner
         </button>
 
@@ -17,19 +23,27 @@
         <div id="modalKuisioner" class="flex fixed inset-0 bg-black/50 items-center justify-center hidden">
             <div class="bg-white p-6 rounded-lg shadow-lg w-96">
                 <h2 class="text-xl font-bold mb-4">Buat Kuisioner Baru</h2>
-                <form action="/admin/kuisioner/store" method="POST">
+                <form action="{{ route('admin.kuisioner.store') }}" method="POST">
                     @csrf
                     <label for="judul" class="block mb-2">Judul Kuisioner</label>
                     <input type="text" name="judul" id="judul" 
                         class="w-full border border-gray-300 p-2 rounded mb-4" required>
-                    
+                    <label for="deskripsi" class="block mb-2">Deskripsi Kuisioner</label>
+                    <input type="text" name="deskripsi" id="deskripsi" 
+                        class="w-full border border-gray-300 p-2 rounded mb-4" required>
+                    <label for="dibuka_pada" class="block mb-2">Dibuka Mulai</label>
+                    <input type="date" name="dibuka_pada" id="dibuka_pada" 
+                        class="w-full border border-gray-300 p-2 rounded mb-4" required>
+                    <label for="ditutup_pada" class="block mb-2">Ditutup Pada</label>
+                    <input type="date" name="ditutup_pada" id="ditutup_pada" 
+                        class="w-full border border-gray-300 p-2 rounded mb-4" required>
                     <div class="flex justify-end space-x-2">
                         <button type="button" onclick="toggleModal(false)" 
-                            class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">
+                            class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 cursor-pointer">
                             Batal
                         </button>
                         <button type="submit" 
-                            class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">
+                            class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 cursor-pointer">
                             Simpan
                         </button>
                     </div>
@@ -49,39 +63,27 @@
                     </tr>
                 </thead>
                 <tbody>
+                    @if ($kuisioner->isEmpty())
+                        <td colspan="7" class="text-center border border-gray-300 px-4 py-4">Tidak ada data Kuisioner.</td>
+                    @else
+                    @foreach ($kuisioner as $k )
                     <tr class="hover:bg-gray-100">
-                        <td class="border border-gray-300 px-4 py-2">1</td>
-                        <td class="border border-gray-300 px-4 py-2">Kuisioner Kepuasan Alumni</td>
-                        <td class="border border-gray-300 px-4 py-2">01 Maret 2025</td>
-                        <td class="border border-gray-300 px-4 py-2 text-center">
-                            <a href="/admin/kelola-kuisioner/1"
+                        <td class="border border-gray-300 px-4 py-2">{{ $loop->iteration }}</td>
+                        <td class="border border-gray-300 px-4 py-2">{{ $k->judul }}</td>
+                        <td class="border border-gray-300 px-4 py-2">{{ \Carbon\Carbon::parse($k->created_at)->translatedFormat('l, d F Y | H:i')}}</td>
+                        <td class="border border-gray-300 px-4 py-2 text-center gap-2">
+                            <a href="{{ route('admin.kuisioner.edit', $k->id) }}"
                                 class="bg-blue-600 text-white px-3 py-2 rounded-lg shadow-md hover:bg-blue-700 transition">
-                                Lihat Kuisioner
+                                Kelola
+                            </a>
+                            <a href="{{ route('admin.kuisioner.hapus', $k->id) }}"
+                                class="bg-red-600 text-white px-3 py-2 rounded-lg shadow-md hover:bg-red-700 transition">
+                                Hapus
                             </a>
                         </td>
                     </tr>
-                    <tr class="hover:bg-gray-100">
-                        <td class="border border-gray-300 px-4 py-2">2</td>
-                        <td class="border border-gray-300 px-4 py-2">Kuisioner Status Pekerjaan</td>
-                        <td class="border border-gray-300 px-4 py-2">15 Februari 2025</td>
-                        <td class="border border-gray-300 px-4 py-2 text-center">
-                            <a href="/kuisioner/2"
-                                class="bg-blue-600 text-white px-3 py-2 rounded-lg shadow-md hover:bg-blue-700 transition">
-                                Lihat Kuisioner
-                            </a>
-                        </td>
-                    </tr>
-                    <tr class="hover:bg-gray-100">
-                        <td class="border border-gray-300 px-4 py-2">3</td>
-                        <td class="border border-gray-300 px-4 py-2">Kuisioner Tracer Study</td>
-                        <td class="border border-gray-300 px-4 py-2">10 Januari 2025</td>
-                        <td class="border border-gray-300 px-4 py-2 text-center">
-                            <a href="/kuisioner/3"
-                                class="bg-blue-600 text-white px-3 py-2 rounded-lg shadow-md hover:bg-blue-700 transition">
-                                Lihat Kuisioner
-                            </a>
-                        </td>
-                    </tr>
+                    @endforeach
+                    @endif
                 </tbody>
             </table>
         </div>

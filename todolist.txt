@@ -1,2 +1,3 @@
 belum selesai :
-masalah pada navbar admin, oba contoh yg navbar user
+
+kurang logika untuk form 

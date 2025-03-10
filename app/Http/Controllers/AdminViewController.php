@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Kuisioner;
 use App\Models\Mahasiswa;
 use Illuminate\Http\Request;
 
@@ -64,15 +65,12 @@ class AdminViewController extends Controller
     }
     public function kelola_kuisioner()
     {
-        return view('admin.kelola-kuisioner');
+        $kuisioner = Kuisioner::all();
+        return view('admin.kelola-kuisioner', compact('kuisioner'));
     }
     public function respon_kuisioner()
     {
         return view('admin.respon-kuisioner');
-    }
-    public function kelola_isi_kuisioner()
-    {
-        return view('admin.kuisioner.edit-kuisioner');
     }
     public function lihat_siswa_merespons()
     {

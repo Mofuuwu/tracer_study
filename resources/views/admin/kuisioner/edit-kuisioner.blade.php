@@ -14,7 +14,10 @@
         <form action="/kuisioner/update" method="POST" class="bg-white p-6 rounded-lg shadow-md mt-6">
             @csrf
             @method('PUT')
-
+            <h1 class="text-2xl font-bold">{{ $kuisioner->judul }}</h1>
+            <p class="text-gray-600 mb-3">Deskripsi : {{ $kuisioner->deskripsi? $kuisioner->deskripsi : 'tidak ada deskripsi' }}</p>
+            <p class="text-sm italic text-gray-800 opacity-70">Dibuka Pada : {{ \Carbon\Carbon::parse($kuisioner->dibuka_pada)->translatedFormat('l, d F Y')}}</p>
+            <p class="text-sm italic text-gray-800 opacity-70 mb-6">Ditutup Pada : {{ $kuisioner->ditutup_pada ? \Carbon\Carbon::parse($kuisioner->ditutup_pada)->translatedFormat('l, d F Y') : '-'}}</p>
             <div id="soal-container">
                 <!-- Pertanyaan Default -->
                 <div class="mb-4 soal-item">
