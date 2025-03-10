@@ -29,6 +29,7 @@ Route::middleware('auth')->group(function () {
 
         //Auth
         Route::post('/data-akun', [UserAuthController::class, 'edit_data_akun'])->name('user.edit.data-akun');
+        Route::post('/data-mahasiswa', [UserAuthController::class, 'edit_data_mahasiswa'])->name('user.edit.data-mahasiswa');
     });
 
     Route::middleware(AdminHandler::class)->group(function () {

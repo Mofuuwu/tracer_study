@@ -8,17 +8,45 @@
             <h1 class="text-2xl font-bold text-gray-800">Data Mahasiswa</h1>
             <p class="text-gray-600">Berikut adalah informasi seputar Anda.</p>
             <p class="text-gray-600 mb-4 text-sm opacity-70 italic">N.B : Silahkan lengkapi data diri kemudian tunggu sampai admin memverifikasi akun Anda untuk bisa mengisi Kuisioner.</p>
-
+            @if(session('success'))
+            <div class="w-full">
+                <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
+                    <strong>Sukses!</strong> {{ session('success') }}
+                </div>
+            </div>
+            @endif
+            @if(session('error'))
+            <div class="w-full px-6">
+                <div class="bg-green-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+                    <strong>Sukses!</strong> {{ session('success') }}
+                </div>
+            </div>
+            @endif
+            @if ($errors->any())
+            Error Memperbarui Data :
+            <div class="text-red-500 text-sm w-full mb-6">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+            @endif
+            @if (session('error'))
+            <div class="alert alert-danger text-red-500 text-sm">
+                {{ session('error') }}
+            </div>
+            @endif
             <!-- Tombol Edit -->
             <div class="flex space-x-4">
-    <button id="btnEdit" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
-        Edit Data
-    </button>
+                <button id="btnEdit" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+                    Edit Data
+                </button>
 
-    <button id="btnKembali" class="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition hidden">
-        Kembali
-    </button>
-</div>
+                <button id="btnKembali" class="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition hidden">
+                    Kembali
+                </button>
+            </div>
             <!-- Informasi Akun -->
             <div id="infoAkun" class="bg-white shadow-lg rounded-lg p-6 border border-gray-300 mt-4">
                 <!-- Informasi Diri -->
@@ -50,7 +78,9 @@
                     </div>
                     <div>
                         <p class="text-gray-500">Tanggal Lahir</p>
-                        <p class="text-lg font-semibold text-gray-800">{{ $mahasiswa->tgl_lahir ?? '-' }}</p>
+                        <p class="text-lg font-semibold text-gray-800">
+                            {{ $mahasiswa->tgl_lahir ? \Carbon\Carbon::parse($mahasiswa->tgl_lahir)->translatedFormat('d F Y') : '-' }}
+                        </p>
                     </div>
                     <div>
                         <p class="text-gray-500">Pekerjaan</p>
@@ -111,10 +141,9 @@
             <!-- Form Edit (Tersembunyi) -->
             <div id="formEdit" class="bg-white shadow-lg rounded-lg p-6 border border-gray-300 mt-4 hidden">
                 <h2 class="text-xl font-semibold text-gray-700 mb-4">Edit Data Akun</h2>
-                <form action="#" method="POST">
+                <form action="{{ route('user.edit.data-mahasiswa') }}" method="POST">
                     @csrf
 
-                    <!-- Informasi Diri -->
                     <!-- Informasi Diri -->
                     <h3 class="text-lg font-semibold text-gray-700 mb-2 flex items-center">
                         <!-- Ikon Profil (SVG) -->
@@ -129,29 +158,29 @@
                     <div class="grid md:grid-cols-2 gap-6">
                         <!-- Nama -->
                         <div class="w-full">
-                            <label class="block text-gray-600 font-medium">Nama</label>
-                            <input type="text" name="nama" value="{{ $mahasiswa->nama ?? '' }}"
+                            <label class="block text-gray-600 font-medium">Nama<span class="text-red-500">*</span></label>
+                            <input required type="text" name="nama" value="{{ $mahasiswa->nama ?? '' }}"
                                 class="w-full p-3 mt-1 border border-gray-300 rounded-lg focus:ring-blue-400 focus:outline-none">
                         </div>
 
                         <!-- Email -->
                         <div class="w-full">
-                            <label class="block text-gray-600 font-medium">Email</label>
-                            <input type="email" name="email" value="{{ $mahasiswa->email ?? '' }}"
+                            <label class="block text-gray-600 font-medium">Email<span class="text-red-500">*</span></label>
+                            <input required type="email" name="email" value="{{ $mahasiswa->email ?? '' }}"
                                 class="w-full p-3 mt-1 border border-gray-300 rounded-lg focus:ring-blue-400 focus:outline-none">
                         </div>
 
                         <!-- Nomor HP -->
                         <div class="w-full">
-                            <label class="block text-gray-600 font-medium">Nomor HP</label>
-                            <input type="text" name="no_hp" value="{{ $mahasiswa->no_hp ?? '' }}"
+                            <label class="block text-gray-600 font-medium">Nomor HP<span class="text-red-500">*</span></label>
+                            <input required type="text" name="no_hp" value="{{ $mahasiswa->no_hp ?? '' }}"
                                 class="w-full p-3 mt-1 border border-gray-300 rounded-lg focus:ring-blue-400 focus:outline-none">
                         </div>
 
                         <!-- Jenis Kelamin -->
                         <div class="w-full">
-                            <label class="block text-gray-600 font-medium">Jenis Kelamin</label>
-                            <select name="jenis_kelamin"
+                            <label class="block text-gray-600 font-medium">Jenis Kelamin<span class="text-red-500">*</span></label>
+                            <select required name="jenis_kelamin"
                                 class="w-full p-3 mt-1 border border-gray-300 rounded-lg focus:ring-blue-400 focus:outline-none">
                                 <option value="Laki-laki" {{ $mahasiswa->jenis_kelamin == 'Laki-laki' ? 'selected' : '' }}>Laki-laki</option>
                                 <option value="Perempuan" {{ $mahasiswa->jenis_kelamin == 'Perempuan' ? 'selected' : '' }}>Perempuan</option>
@@ -160,27 +189,26 @@
 
                         <!-- Tanggal Lahir -->
                         <div class="w-full">
-                            <label class="block text-gray-600 font-medium">Tanggal Lahir</label>
-                            <input type="date" name="tgl_lahir" value="{{ $mahasiswa->tgl_lahir ?? '' }}"
+                            <label class="block text-gray-600 font-medium">Tanggal Lahir<span class="text-red-500">*</span></label>
+                            <input required type="date" name="tgl_lahir" value="{{ $mahasiswa->tgl_lahir ?? '' }}"
                                 class="w-full p-3 mt-1 border border-gray-300 rounded-lg focus:ring-blue-400 focus:outline-none">
                         </div>
 
                         <!-- Pekerjaan -->
                         <div class="w-full">
-                            <label class="block text-gray-600 font-medium">Pekerjaan</label>
-                            <input type="text" name="pekerjaan" value="{{ $mahasiswa->pekerjaan ?? '' }}"
+                            <label class="block text-gray-600 font-medium">Pekerjaan<span class="text-red-500">*</span></label>
+                            <input required type="text" name="pekerjaan" value="{{ $mahasiswa->pekerjaan ?? '' }}"
                                 class="w-full p-3 mt-1 border border-gray-300 rounded-lg focus:ring-blue-400 focus:outline-none">
                         </div>
 
                         <!-- Alamat -->
                         <div class="w-full md:col-span-2">
-                            <label class="block text-gray-600 font-medium">Alamat</label>
-                            <textarea name="alamat"
+                            <label class="block text-gray-600 font-medium">Alamat<span class="text-red-500">*</span></label>
+                            <textarea required name="alamat"
                                 class="w-full p-3 mt-1 border border-gray-300 rounded-lg focus:ring-blue-400 focus:outline-none">{{ $mahasiswa->alamat ?? '' }}</textarea>
                         </div>
                     </div>
 
-                    <!-- Informasi Akademik -->
                     <!-- Informasi Akademik -->
                     <h3 class="text-lg font-semibold text-gray-700 mb-2 mt-6 flex items-center">
                         <!-- Ikon Akademik (SVG) -->
@@ -195,43 +223,43 @@
                     <div class="grid md:grid-cols-2 gap-6">
                         <!-- NIM -->
                         <div class="w-full">
-                            <label class="block text-gray-600 font-medium">NIM</label>
-                            <input type="text" name="nim" value="{{ $mahasiswa->nim ?? '' }}"
+                            <label class="block text-gray-600 font-medium">NIM<span class="text-red-500">*</span></label>
+                            <input required type="number" name="nim" value="{{ $mahasiswa->nim ?? '' }}"
                                 class="w-full p-3 mt-1 border border-gray-300 rounded-lg focus:ring-blue-400 focus:outline-none">
                         </div>
 
                         <!-- Angkatan -->
                         <div class="w-full">
-                            <label class="block text-gray-600 font-medium">Angkatan</label>
-                            <input type="text" name="angkatan" value="{{ $mahasiswa->angkatan ?? '' }}"
+                            <label class="block text-gray-600 font-medium">Angkatan<span class="text-red-500">*</span></label>
+                            <input required type="number" name="angkatan" value="{{ $mahasiswa->angkatan ?? '' }}"
                                 class="w-full p-3 mt-1 border border-gray-300 rounded-lg focus:ring-blue-400 focus:outline-none">
                         </div>
 
                         <!-- Program Studi -->
                         <div class="w-full">
-                            <label class="block text-gray-600 font-medium">Program Studi</label>
-                            <input type="text" name="prodi" value="{{ $mahasiswa->prodi ?? '' }}"
+                            <label class="block text-gray-600 font-medium">Program Studi<span class="text-red-500">*</span></label>
+                            <input required type="text" name="prodi" value="{{ $mahasiswa->prodi ?? '' }}"
                                 class="w-full p-3 mt-1 border border-gray-300 rounded-lg focus:ring-blue-400 focus:outline-none">
                         </div>
 
                         <!-- Fakultas -->
                         <div class="w-full">
-                            <label class="block text-gray-600 font-medium">Fakultas</label>
-                            <input type="text" name="fakultas" value="{{ $mahasiswa->fakultas ?? '' }}"
+                            <label class="block text-gray-600 font-medium">Fakultas<span class="text-red-500">*</span></label>
+                            <input required type="text" name="fakultas" value="{{ $mahasiswa->fakultas ?? '' }}"
                                 class="w-full p-3 mt-1 border border-gray-300 rounded-lg focus:ring-blue-400 focus:outline-none">
                         </div>
 
                         <!-- Semester -->
                         <div class="w-full">
-                            <label class="block text-gray-600 font-medium">Semester</label>
-                            <input type="number" name="semester" value="{{ $mahasiswa->semester ?? '' }}"
+                            <label class="block text-gray-600 font-medium">Semester<span class="text-red-500">*</span></label>
+                            <input required type="number" max="14" name="semester" value="{{ $mahasiswa->semester ?? '' }}"
                                 class="w-full p-3 mt-1 border border-gray-300 rounded-lg focus:ring-blue-400 focus:outline-none">
                         </div>
 
                         <!-- Status Mahasiswa -->
                         <div class="w-full">
-                            <label class="block text-gray-600 font-medium">Status Mahasiswa</label>
-                            <select name="status"
+                            <label class="block text-gray-600 font-medium">Status Mahasiswa<span class="text-red-500">*</span></label>
+                            <select required name="status"
                                 class="w-full p-3 mt-1 border border-gray-300 rounded-lg focus:ring-blue-400 focus:outline-none">
                                 <option value="aktif" {{ $mahasiswa->status == 'aktif' ? 'selected' : '' }}>Aktif</option>
                                 <option value="lulus" {{ $mahasiswa->status == 'lulus' ? 'selected' : '' }}>Lulus</option>
