@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Mahasiswa;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class UserViewController extends Controller
 {
@@ -10,10 +12,12 @@ class UserViewController extends Controller
         return view('user.dashboard');
     }
     public function data_akun() {
-        return view('user.data-akun');
+        $user = Auth::user();
+        return view('user.data-akun', compact('user'));
     }
     public function data_mahasiswa() {
-        return view('user.data-mahasiswa');
+        $mahasiswa = Mahasiswa::where('user_id', Auth::user()->id)->first();
+        return view('user.data-mahasiswa', compact('mahasiswa'));
     }
     public function kuisioner() {
         return view('user.kuisioner');

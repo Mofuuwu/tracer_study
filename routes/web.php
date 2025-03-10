@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminViewController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\UserAuthController;
 use App\Http\Controllers\UserViewController;
 use App\Http\Middleware\AdminHandler;
 use App\Http\Middleware\UserHandler;
@@ -25,6 +26,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/data-mahasiswa', [UserViewController::class, 'data_mahasiswa'])->name('user.data-mahasiswa');
         Route::get('/kuisioner', [UserViewController::class, 'kuisioner'])->name('user.kuisioner');
         Route::get('kuisioner/jawab', [UserViewController::class, 'kuis']);
+
+        //Auth
+        Route::post('/data-akun', [UserAuthController::class, 'edit_data_akun'])->name('user.edit.data-akun');
     });
 
     Route::middleware(AdminHandler::class)->group(function () {
