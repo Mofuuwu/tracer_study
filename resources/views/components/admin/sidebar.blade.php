@@ -11,16 +11,16 @@
                     <a href="/admin" class="{{ Request::is('admin') ? 'text-yellow-300 underline' : '' }} font-semibold block px-4 py-2 rounded hover:bg-blue-700">Beranda</a>
                 </li>
                 <li class="mb-4">
-                    <a href="/admin/verifikasi-alumni" class="{{ Request::is('admin/verifikasi-alumni') ? 'text-yellow-300 underline' : '' }} font-semibold block px-4 py-2 rounded hover:bg-blue-700">Verifikasi Alumni</a>
+                    <a href="/admin/verifikasi-mahasiswa" class="{{ Request::is('admin/verifikasi-mahasiswa*') ? 'text-yellow-300 underline' : '' }} font-semibold block px-4 py-2 rounded hover:bg-blue-700">Verifikasi Mahasiswa</a>
                 </li>
                 <li class="mb-4">
-                    <a href="/admin/data-alumni" class="{{ Request::is('admin/data-alumni') ? 'text-yellow-300 underline' : '' }} font-semibold block px-4 py-2 rounded hover:bg-blue-700">Data Alumni</a>
+                    <a href="/admin/data-mahasiswa" class="{{ Request::is('admin/data-mahasiswa*') ? 'text-yellow-300 underline' : '' }} font-semibold block px-4 py-2 rounded hover:bg-blue-700">Data Mahasiswa</a>
                 </li>
                 <li class="mb-4">
-                    <a href="/admin/kelola-kuisioner" class="{{ Request::is('admin/kelola-kuisioner') ? 'text-yellow-300 underline' : '' }} font-semibold block px-4 py-2 rounded hover:bg-blue-700">Kelola Kuisioner</a>
+                    <a href="/admin/kelola-kuisioner" class="{{ Request::is('admin/kelola-kuisioner*') ? 'text-yellow-300 underline' : '' }} font-semibold block px-4 py-2 rounded hover:bg-blue-700">Kelola Kuisioner</a>
                 </li>
                 <li class="mb-4">
-                    <a href="/admin/respon-kuisioner" class="{{ Request::is('admin/respon-kuisioner') ? 'text-yellow-300 underline' : '' }} font-semibold block px-4 py-2 rounded hover:bg-blue-700">Respon Kuisioner</a>
+                    <a href="/admin/respon-kuisioner" class="{{ Request::is('admin/respon-kuisioner*') ? 'text-yellow-300 underline' : '' }} font-semibold block px-4 py-2 rounded hover:bg-blue-700">Respon Kuisioner</a>
                 </li>
             </ul>
         </div>

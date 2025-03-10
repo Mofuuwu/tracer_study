@@ -8,6 +8,23 @@
             <h1 class="text-2xl font-bold">Kuisioner</h1>
             <p class="text-gray-600">Berikut beberapa data kuisioner</p>
         </div>
+        @if ($mahasiswa->verified === 0)
+        <div class="px-6">
+            <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4" role="alert">
+                <div class="flex">
+                    <!-- Ikon Peringatan -->
+                    <svg class="w-6 h-6 text-red-600 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.29 3.86a1 1 0 011.42 0l7.29 7.29a1 1 0 010 1.42l-7.29 7.29a1 1 0 01-1.42 0l-7.29-7.29a1 1 0 010-1.42l7.29-7.29z" />
+                    </svg>
+
+                    <div>
+                        <p class="font-bold">Akun Belum Terverifikasi</p>
+                        <p>Silahkan isi data Mahasiswa atau tunggu akun diverifikasi oleh Admin sebelum mengisi kuisioner.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @else
         <div class="flex-1 px-6 py-6 w-full min-h-screen">
 
             <!-- Kuisioner yang BELUM diisi -->
@@ -68,7 +85,7 @@
                 </div>
             </div>
         </div>
-
+        @endif
     </section>
 </div>
 @include('components.end-html')

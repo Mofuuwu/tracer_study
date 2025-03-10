@@ -20,9 +20,13 @@ class UserViewController extends Controller
         return view('user.data-mahasiswa', compact('mahasiswa'));
     }
     public function kuisioner() {
-        return view('user.kuisioner');
+        $user = Auth::user();
+        $mahasiswa = Mahasiswa::where('user_id', $user->id)->first();
+        return view('user.kuisioner', compact('user', 'mahasiswa'));
     }
     public function kuis() {
+            $user = Auth::user();
+            $mahasiswa = Mahasiswa::where('user_id', $user->id)->first();
             $pertanyaan = [
                 "Bagaimana pengalaman Anda selama kuliah?",
                 "Apakah ilmu yang Anda pelajari relevan dengan pekerjaan Anda saat ini?",
@@ -34,6 +38,8 @@ class UserViewController extends Controller
                 "Apakah ada program studi lanjut yang Anda minati?",
                 "Apakah ada program studi lanjut yang Anda minati?",
             ];
-        return view('user.kuisioner.kuisioner-template', compact('pertanyaan'));
+            return view('user.kuisioner.kuisioner-template', compact('pertanyaan', 'user', 'mahasiswa'));
     }
+
+    
 }

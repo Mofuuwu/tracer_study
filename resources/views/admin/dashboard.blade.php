@@ -14,13 +14,23 @@
         <!-- Ringkasan Data -->
         <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
             <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
-                <h2 class="text-lg font-semibold text-gray-700">Total Alumni</h2>
-                <p class="text-2xl font-bold text-blue-600">150</p>
+                <h2 class="text-lg font-semibold text-gray-700">Total Mahasiswa</h2>
+                <p class="text-2xl font-bold text-blue-600">{{ $total_mahasiswa }}</p>
+
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
+                <h2 class="text-lg font-semibold text-gray-700">Mahasiswa Aktif</h2>
+                <p class="text-2xl font-bold text-blue-600">{{ $mahasiswa_aktif }}</p>
+
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
+                <h2 class="text-lg font-semibold text-gray-700">Alumni</h2>
+                <p class="text-2xl font-bold text-blue-600">{{ $alumni }}</p>
 
             </div>
             <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
                 <h2 class="text-lg font-semibold text-gray-700">Menunggu Verifikasi</h2>
-                <p class="text-2xl font-bold text-red-600">5</p>
+                <p class="text-2xl font-bold text-red-600">{{ $mahasiswa_menunggu_verifikasi }}</p>
             </div>
 
             <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
