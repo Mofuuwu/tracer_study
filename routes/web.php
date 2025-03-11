@@ -46,7 +46,11 @@ Route::middleware('auth')->group(function () {
 
         //Kuisioner
         Route::get('/admin/kelola-kuisioner/{id}', [KuisionerController::class, 'kelola_isi_kuisioner'])->name('admin.kuisioner.edit');
-        Route::get('/admin/kelola-kuisioner/hapus/{id}', [KuisionerController::class, 'hapus_kuisioner'])->name('admin.kuisioner.hapus');
+        Route::delete('/admin/kelola-kuisioner/{id}/hapus', [KuisionerController::class, 'hapus_kuisioner'])->name('admin.kuisioner.hapus');
+        Route::put('/admin/kelola-kuisioner/update/isi/{id}', [KuisionerController::class, 'update_isi_kuisioner'])->name('admin.kuisioner.edit_isi');
+        Route::put('/admin/kelola-kuisioner/update/judul/{id}', [KuisionerController::class, 'update_header_kuisioner'])->name('admin.kuisioner.edit_header');
+        Route::delete('/admin/kelola-kuisioner/{id}/{soal_id}/hapus', [KuisionerController::class, 'hapus_soal'])->name('admin.kuisioner.soal.hapus');
+
         Route::get('/admin/respon-kuisioner/id', [AdminViewController::class, 'lihat_siswa_merespons']);
         Route::get('/admin/respon-kuisioner/id/siswa', [AdminViewController::class, 'lihat_respon_siswa']);
         Route::get('/admin/respon-kuisioner/id/statistik', [AdminViewController::class, 'lihat__statistik_respon']);

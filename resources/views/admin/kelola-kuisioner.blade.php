@@ -14,7 +14,7 @@
         </div>
         @endif
         <!-- Tombol Buat Kuisioner -->
-        <button onclick="toggleModal(true)" 
+        <button onclick="toggleModal(true)"
             class="bg-green-600 text-white px-3 py-2 rounded-lg shadow-md hover:bg-green-700 transition cursor-pointer">
             Buat Kuisioner
         </button>
@@ -26,23 +26,23 @@
                 <form action="{{ route('admin.kuisioner.store') }}" method="POST">
                     @csrf
                     <label for="judul" class="block mb-2">Judul Kuisioner</label>
-                    <input type="text" name="judul" id="judul" 
+                    <input type="text" name="judul" id="judul"
                         class="w-full border border-gray-300 p-2 rounded mb-4" required>
                     <label for="deskripsi" class="block mb-2">Deskripsi Kuisioner</label>
-                    <input type="text" name="deskripsi" id="deskripsi" 
+                    <input type="text" name="deskripsi" id="deskripsi"
                         class="w-full border border-gray-300 p-2 rounded mb-4" required>
                     <label for="dibuka_pada" class="block mb-2">Dibuka Mulai</label>
-                    <input type="date" name="dibuka_pada" id="dibuka_pada" 
+                    <input type="date" name="dibuka_pada" id="dibuka_pada"
                         class="w-full border border-gray-300 p-2 rounded mb-4" required>
                     <label for="ditutup_pada" class="block mb-2">Ditutup Pada</label>
-                    <input type="date" name="ditutup_pada" id="ditutup_pada" 
+                    <input type="date" name="ditutup_pada" id="ditutup_pada"
                         class="w-full border border-gray-300 p-2 rounded mb-4" required>
                     <div class="flex justify-end space-x-2">
-                        <button type="button" onclick="toggleModal(false)" 
+                        <button type="button" onclick="toggleModal(false)"
                             class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 cursor-pointer">
                             Batal
                         </button>
-                        <button type="submit" 
+                        <button type="submit"
                             class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 cursor-pointer">
                             Simpan
                         </button>
@@ -64,22 +64,25 @@
                 </thead>
                 <tbody>
                     @if ($kuisioner->isEmpty())
-                        <td colspan="7" class="text-center border border-gray-300 px-4 py-4">Tidak ada data Kuisioner.</td>
+                    <td colspan="7" class="text-center border border-gray-300 px-4 py-4">Tidak ada data Kuisioner.</td>
                     @else
                     @foreach ($kuisioner as $k )
                     <tr class="hover:bg-gray-100">
                         <td class="border border-gray-300 px-4 py-2">{{ $loop->iteration }}</td>
                         <td class="border border-gray-300 px-4 py-2">{{ $k->judul }}</td>
                         <td class="border border-gray-300 px-4 py-2">{{ \Carbon\Carbon::parse($k->created_at)->translatedFormat('l, d F Y | H:i')}}</td>
-                        <td class="border border-gray-300 px-4 py-2 text-center gap-2">
+                        <td class="border border-gray-300 px-4 py-2 text-center gap-2 flex justify-center">
                             <a href="{{ route('admin.kuisioner.edit', $k->id) }}"
-                                class="bg-blue-600 text-white px-3 py-2 rounded-lg shadow-md hover:bg-blue-700 transition">
+                                class="bg-blue-600 text-white px-3 py-2 rounded-lg shadow-md hover:bg-blue-700 transition cursor-pointer">
                                 Kelola
                             </a>
-                            <a href="{{ route('admin.kuisioner.hapus', $k->id) }}"
-                                class="bg-red-600 text-white px-3 py-2 rounded-lg shadow-md hover:bg-red-700 transition">
-                                Hapus
-                            </a>
+                            <form action="{{ route('admin.kuisioner.hapus', $k->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus Kuisioner ini?')">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="bg-red-600 text-white px-3 py-2 rounded-lg shadow-md hover:bg-red-700 transition cursor-pointer">
+                                    Hapus
+                                </button>
+                            </form>
                         </td>
                     </tr>
                     @endforeach

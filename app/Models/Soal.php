@@ -15,6 +15,6 @@ class Soal extends Model
         return $this->belongsTo(Kuisioner::class, 'kuisioner_id');
     }
     public function pilihan_jawaban() {
-        return $this->hasMany(Kuisioner::class, 'soal_id');
+        return $this->hasMany(PilihanJawaban::class, 'soal_id');
     }
 }
