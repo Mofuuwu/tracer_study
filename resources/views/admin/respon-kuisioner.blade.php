@@ -1,9 +1,9 @@
 @include('components.start-html')
 
-<div class="w-full flex bg-gray-100 min-h-screen">
+<div class="flex bg-gray-100 min-h-screen md:justify-end">
     @include('components.admin.sidebar')
 
-    <section class="flex-1 p-6 w-full">
+    <section class="px-6 py-6 w-full md:w-[70%] lg:w-[80%] bg-gray-100 min-h-screen ">
         <h1 class="text-2xl font-bold">Daftar Kuisioner</h1>
         <p class="text-gray-600 mb-4">Pilih menu di sidebar untuk mengelola data.</p>
 
@@ -17,28 +17,17 @@
                     </tr>
                 </thead>
                 <tbody>
+                    @foreach ($kuisioners as $index => $kuisioner)
                     <tr class="border border-gray-300">
-                        <td class="border border-gray-300 p-2">1</td>
-                        <td class="border border-gray-300 p-2">Survey Kepuasan Pelanggan</td>
+                        <td class="border border-gray-300 p-2">{{ $index + 1 }}</td>
+                        <td class="border border-gray-300 p-2">{{ $kuisioner->judul }}</td>
                         <td class="border border-gray-300 p-2">
-                            <a href="/admin/respon-kuisioner/id" class="text-blue-600 hover:underline">Lihat Respon</a>
+                            <a href="{{ route('admin.respon-kuisioner.kuisioner.lihat', $kuisioner->id) }}" class="text-blue-600 hover:underline">Lihat Respon</a>
                         </td>
                     </tr>
-                    <tr class="border border-gray-300">
-                        <td class="border border-gray-300 p-2">2</td>
-                        <td class="border border-gray-300 p-2">Evaluasi Kinerja Dosen</td>
-                        <td class="border border-gray-300 p-2">
-                            <a href="#" class="text-blue-600 hover:underline">Lihat Respon</a>
-                        </td>
-                    </tr>
-                    <tr class="border border-gray-300">
-                        <td class="border border-gray-300 p-2">3</td>
-                        <td class="border border-gray-300 p-2">Kepuasan Mahasiswa terhadap Fasilitas</td>
-                        <td class="border border-gray-300 p-2">
-                            <a href="#" class="text-blue-600 hover:underline">Lihat Respon</a>
-                        </td>
-                    </tr>
+                    @endforeach
                 </tbody>
+
             </table>
         </div>
     </section>

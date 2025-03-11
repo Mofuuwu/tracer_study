@@ -1,9 +1,9 @@
 @include('components.start-html')
 
-<div class="flex bg-gray-100 min-h-screen">
+<div class="flex bg-gray-100 min-h-screen md:justify-end">
     @include('components.admin.sidebar')
-    
-    <div class="w-full flex-1 p-6 min-h-screen">
+
+    <div class="px-6 py-6 w-full md:w-[70%] lg:w-[80%] bg-gray-100 min-h-screen ">
         <h1 class="text-2xl font-bold text-gray-800 mb-4">Dashboard Admin</h1>
         <div class="mt-6 flex justify-end">
             <a href="{{ route('logout') }}" class="bg-red-600 text-white px-5 py-3 rounded-lg shadow-md hover:bg-red-700 transition">
@@ -35,13 +35,14 @@
 
             <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
                 <h2 class="text-lg font-semibold text-gray-700">Total Kuisioner</h2>
-                <p class="text-2xl font-bold text-blue-600">30</p>
+                <p class="text-2xl font-bold text-blue-600">{{ $total_kuisioner }}</p>
             </div>
 
             <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
                 <h2 class="text-lg font-semibold text-gray-700">Kuisioner Diisi</h2>
-                <p class="text-2xl font-bold text-green-600">22</p>
+                <p class="text-2xl font-bold text-green-600">{{ $kuisioner_diisi }}</p>
             </div>
+
 
         </div>
 
@@ -60,27 +61,18 @@
                         </tr>
                     </thead>
                     <tbody>
+                        @foreach ($log_aktivitas as $log)
                         <tr class="border-t">
-                            <td class="p-2 border">2025-03-07 10:30</td>
-                            <td class="p-2 border">John Doe Willingsmith</td>
-                            <td class="p-2 border">Hfhudsfufy fhyyfgvbygfr bfbyfr</td>
-                        </tr>
-                        <tr class="border-t">
-                            <td class="p-2 border">2025-03-07 09:45</td>
-                            <td class="p-2 border">Jane Smith</td>
-                            <td class="p-2 border">Mendaftar akun</td>
-                        </tr>
-                        <tr class="border-t">
-                            <td class="p-2 border">2025-03-07 08:20</td>
-                            <td class="p-2 border">Admin</td>
-                            <td class="p-2 border">Verifikasi alumni</td>
-                        </tr>
+                            <td class="p-2 border">{{ $log->created_at->translatedFormat('l, d F Y | H:i') }}</td>
+                            <td class="p-2 border">{{ $log->mahasiswa->nama ?? 'Tidak Diketahui' }}</td>
+                            <td class="p-2 border">{{ $log->kuisioner->judul ?? 'Tanpa Judul' }}</td>
+                        </tr> 
+                        @endforeach
                     </tbody>
+
                 </table>
             </div>
         </div>
-
-
     </div>
 </div>
 

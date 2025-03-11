@@ -1,3 +1,11 @@
 belum selesai :
 
-kurang logika untuk form 
+tambah mode private dan public untuk kuisioner
+ketika menambahkan kuisioner baru, modenya adalah private
+mode private tidak akan ditampikna ke user
+ganti ke mode public agar kuisioner bisa ditampilkan ke user
+hal ini bertujuan agar user tidak mengisi kuisioner yg soalnya baru 1 atau sedikit
+
+
+kurang statistik
+

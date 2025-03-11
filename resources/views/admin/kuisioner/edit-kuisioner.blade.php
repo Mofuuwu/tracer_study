@@ -1,9 +1,9 @@
 @include('components.start-html')
 
-<div class="flex bg-gray-100 w-full min-h-screen">
+<div class="flex bg-gray-100 min-h-screen md:justify-end">
     @include('components.admin.sidebar')
 
-    <section class="w-full flex-1 p-6">
+    <section class="px-6 py-6 w-full md:w-[70%] lg:w-[80%] bg-gray-100 min-h-screen ">
         <h1 class="text-2xl font-bold mb-4">Edit Kuisioner</h1>
         <a href="./" class="bg-blue-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-700 transition">Kembali</a>
         @if(session('success'))
@@ -62,7 +62,7 @@
             <!-- Form Tambah Soal -->
             <div id="soal-container">
                 <div class="mb-4 soal-item">
-                    <label class="block text-gray-700 font-semibold">Pertanyaan 1</label>
+                    <label class="block text-gray-700 font-semibold">Pertanyaan</label>
                     <input type="text" name="soal[]" class="w-full border border-gray-300 p-2 rounded-lg" placeholder="Tulis pertanyaan" required>
 
                     <!-- Pilihan tipe soal -->
@@ -75,8 +75,8 @@
                     <div class="hidden mt-2 pilihan-container">
                         <p class="text-gray-700 font-semibold">Opsi Jawaban:</p>
                         <div class="space-y-2 pilihan-list">
-                            <input required type="text" name="pilihan[0][]" class="w-full border border-gray-300 p-2 rounded-lg" placeholder="Pilihan 1">
-                            <input required type="text" name="pilihan[0][]" class="w-full border border-gray-300 p-2 rounded-lg" placeholder="Pilihan 2">
+                            <input type="text" name="pilihan[0][]" class="w-full border border-gray-300 p-2 rounded-lg" placeholder="Pilihan 1">
+                            <input type="text" name="pilihan[0][]" class="w-full border border-gray-300 p-2 rounded-lg" placeholder="Pilihan 2">
                         </div>
                         <button type="button" class="mt-2 text-blue-600 hover:underline tambah-pilihan">+ Tambah Pilihan</button>
                     </div>
@@ -88,8 +88,8 @@
 
             <!-- Tombol -->
             <div class="flex gap-4 mt-4 justify-between">
-                <button type="submit" id="save-button" class="bg-green-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-green-700 transition cursor-pointer">Simpan</button>
-                <button type="button" id="tambah-soal" class="bg-blue-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-700 transition cursor-pointer">Tambah Soal</button>
+                <button type="submit" id="save-button" class="bg-green-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-green-700 transition cursor-pointer">Tambah Soal</button>
+                <!-- <button type="button" id="tambah-soal" class="bg-blue-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-700 transition cursor-pointer">Tambah Soal</button> -->
             </div>
         </form>
 
@@ -144,36 +144,7 @@
 
 <!-- Script -->
 <script>
-    document.getElementById("tambah-soal").addEventListener("click", function() {
-        let soalContainer = document.getElementById("soal-container");
-        let soalCount = document.querySelectorAll(".soal-item").length + 1;
-
-        let newSoal = document.createElement("div");
-        newSoal.classList.add("mb-4", "soal-item");
-        newSoal.innerHTML = `
-            <label class="block text-gray-700 font-semibold">Pertanyaan ${soalCount}</label>
-            <input type="text" name="soal[]" class="w-full border border-gray-300 p-2 rounded-lg" placeholder="Tulis pertanyaan">
-
-            <select name="tipe_soal[]" class="w-full border border-gray-300 p-2 rounded-lg mt-2 tipe-soal">
-                <option value="isian">Isian</option>
-                <option value="pilihan_ganda">Pilihan Ganda</option>
-            </select>
-
-            <div class="hidden mt-2 pilihan-container">
-                <p class="text-gray-700 font-semibold">Opsi Jawaban:</p>
-                <div class="space-y-2 pilihan-list">
-                    <input required type="text" name="pilihan[]" class="w-full border border-gray-300 p-2 rounded-lg" placeholder="Pilihan 1">
-                    <input required type="text" name="pilihan[]" class="w-full border border-gray-300 p-2 rounded-lg" placeholder="Pilihan 2">
-                </div>
-                <button type="button" class="mt-2 text-blue-600 hover:underline tambah-pilihan">+ Tambah Pilihan</button>
-            </div>
-
-            <button type="button" class="text-red-600 hover:underline mt-2 hapus-soal">Hapus Pertanyaan</button>
-        `;
-
-        soalContainer.appendChild(newSoal);
-    });
-
+ 
     document.addEventListener("change", function(event) {
         if (event.target.classList.contains("tipe-soal")) {
             let pilihanContainer = event.target.closest(".soal-item").querySelector(".pilihan-container");
@@ -185,7 +156,7 @@
         }
     });
 
-    document.addEventListener("click", function(event) {
+document.addEventListener("click", function(event) {
     // Tambah Pilihan Jawaban
     if (event.target.classList.contains("tambah-pilihan")) {
         let soalItem = event.target.closest(".soal-item");

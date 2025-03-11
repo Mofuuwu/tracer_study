@@ -1,0 +1,189 @@
+@include('components.start-html')
+
+<div class="flex md:justify-end">
+    @include('components.user.sidebar')
+    <div class="px-6 py-6 w-full md:w-[70%] lg:w-[80%] bg-gray-100 min-h-screen ">
+        <div class="flex md:flex-row justify-between flex-col">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-800 ">{{ $kuisioner->judul }}</h1>
+                <p class="text-gray-600 mb-3">{{ $kuisioner->deskripsi ? $kuisioner->deskripsi : 'Tidak ada deskripsi' }}</p>
+                <p class="text-sm italic text-gray-600">Dibuka Pada : {{ \Carbon\Carbon::parse($kuisioner->dibuka_pada)->translatedFormat('l, d F Y')}}</p>
+                <p class="text-sm italic text-gray-600 mb-6">Ditutup Pada : {{ $kuisioner->ditutup_pada ? \Carbon\Carbon::parse($kuisioner->ditutup_pada)->translatedFormat('l, d F Y') : '-'}}</p>
+            </div>
+            <button
+                onclick="confirmExit()"
+                class="cursor-pointer h-fit mb-4 bg-red-400 text-white px-4 py-2 rounded-lg shadow-md hover:bg-gray-500 transition">
+                Kembali Ke Beranda
+            </button>
+        </div>
+        <div class="flex-1 flex gap-6 md:gap-0 md:flex-row flex-col md:justify-center min-h-[80vh] md:mt-6">
+            <div class="w-full h-fit max-w-4xl bg-white shadow-lg rounded-lg p-6 border border-gray-300">
+                <!-- Form untuk mengirim jawaban -->
+                <form id="kuisionerForm" action="" method="POST">
+                    @csrf
+                    <!-- Container Soal -->
+                    <div id="soal-container">
+                        @foreach($soal as $index => $s)
+                        <div class="soal hidden" data-index="{{ $index }}">
+                            <label class="block text-gray-700 font-semibold mb-2">{{ $index + 1 }}. {{ $s->pertanyaan }}</label>
+
+                            @if($s->tipe === 'isian')
+                            <textarea name="jawaban[{{ $s->id }}]" class="w-full p-3 border rounded-lg focus:ring focus:ring-blue-200 jawaban" data-index="{{ $index }}" rows="3"></textarea>
+                            @elseif($s->tipe === 'pilihan_ganda')
+                            @foreach($s->pilihan_jawaban as $opsi)
+                            <div class="flex items-center mb-2">
+                                <input type="radio" id="jawaban-{{ $s->id }}-{{ $loop->index }}" name="jawaban[{{ $s->id }}]" class="mr-2 jawaban" value="{{ $opsi->opsi }}" data-index="{{ $index }}">
+                                <label for="jawaban-{{ $s->id }}-{{ $loop->index }}" class="text-gray-700 cursor-pointer">{{ $opsi->opsi }}</label>
+                            </div>
+                            @endforeach
+                            @endif
+                        </div>
+                        @endforeach
+                    </div>
+
+                    <!-- Navigasi Soal -->
+                    <div class="flex justify-between items-center mt-6">
+                        <button type="button" id="prevBtn" class="bg-gray-400 text-white px-4 py-2 rounded-lg shadow-md hover:bg-gray-500 transition" disabled>
+                            Back
+                        </button>
+
+                        <button type="button" id="nextBtn" class="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-700 transition">
+                            Next
+                        </button>
+
+                        <button type="button" onclick="validasiKuisioner(this)" id="submitBtn" class="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-700 transition hidden">
+                            Submit
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Kotak Daftar Soal -->
+            <div class="lg:w-80 md:w-100 w-full md:ml-6 ml-0 bg-gray-200 p-4 rounded-lg shadow-md h-fit">
+                <h2 class="text-lg font-semibold text-gray-800 mb-4">Nomor Soal</h2>
+                <div id="nomor-container" class="grid md:grid-cols-5 sm:grid-cols-10 grid-cols-6 gap-2">
+                    @foreach($soal as $index => $s)
+                    <button type="button" class="nomor w-10 h-10 rounded bg-gray-300 hover:bg-gray-400 transition" data-index="{{ $index }}">
+                        {{ $index + 1 }}
+                    </button>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@include('components.end-html')
+
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    function confirmExit() {
+        if (confirm("Apakah Anda yakin ingin kembali ke beranda? Semua jawaban yang belum disimpan akan hilang.")) {
+            window.location.href = "{{ route('user.kuisioner') }}";
+        }
+    }
+    
+   
+    $(document).ready(function() {
+    let totalSoal = $(".soal").length;
+    let currentSoal = 0;
+
+    function updateSoal() {
+        $(".soal").addClass("hidden");
+        $(".soal[data-index='" + currentSoal + "']").removeClass("hidden");
+
+        $("#prevBtn").prop("disabled", currentSoal === 0);
+        $("#nextBtn").prop("disabled", currentSoal === totalSoal - 1);
+
+        if (currentSoal === totalSoal - 1) {
+            $("#nextBtn").addClass("hidden");
+            $("#submitBtn").removeClass("hidden");
+        } else {
+            $("#nextBtn").removeClass("hidden");
+            $("#submitBtn").addClass("hidden");
+        }
+
+        $(".nomor").removeClass("bg-blue-500 text-white");
+        $(".nomor[data-index='" + currentSoal + "']").addClass("bg-blue-500 text-white");
+    }
+
+    function updateStatusNomor() {
+        $(".soal").each(function () {
+            let index = $(this).data("index");
+            let isFilled = false;
+
+            if ($(this).find("input[type='radio']:checked").length > 0 || $(this).find("textarea").val().trim() !== "") {
+                isFilled = true;
+            }
+
+            let nomorButton = $(".nomor[data-index='" + index + "']");
+            if (isFilled) {
+                nomorButton.addClass("bg-green-400").removeClass("bg-gray-300");
+            } else {
+                nomorButton.addClass("bg-gray-300").removeClass("bg-green-400");
+            }
+        });
+    }
+
+    $(document).on("input change", ".jawaban", function () {
+        updateStatusNomor();
+    });
+
+    $(".nomor").click(function() {
+        currentSoal = $(this).data("index");
+        updateSoal();
+    });
+
+    $("#nextBtn").click(function() {
+        if (currentSoal < totalSoal - 1) {
+            currentSoal++;
+            updateSoal();
+        }
+    });
+
+    $("#prevBtn").click(function() {
+        if (currentSoal > 0) {
+            currentSoal--;
+            updateSoal();
+        }
+    });
+    updateSoal();
+    updateStatusNomor();
+});
+
+function validasiKuisioner(btn) {
+    let valid = true;
+
+    $(".soal").each(function () {
+        let index = $(this).data("index");
+        let isAnswered = false;
+
+        let textarea = $(this).find("textarea");
+        let radio = $(this).find("input[type='radio']:checked");
+
+        if ((textarea.length > 0 && textarea.val()?.trim() !== "") || radio.length > 0) {
+            isAnswered = true;
+        }
+
+        if (!isAnswered) {
+            valid = false;
+            alert("Harap isi semua pertanyaan sebelum mengirim kuisioner.");
+            currentSoal = index;
+            updateSoal();
+            return false; 
+        }
+    });
+
+    if (valid) {
+        $("#kuisionerForm").submit();
+    }
+}
+
+$("#submitBtn").click(function() {
+    validasiKuisioner(this);
+});
+
+
+
+</script>

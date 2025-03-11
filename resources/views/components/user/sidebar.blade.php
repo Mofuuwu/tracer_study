@@ -1,13 +1,13 @@
 @include('components.start-html')
 
-<div class="flex">
+<div class="flex fixed top-0 left-0 md:w-[30%] lg:w-[20%]">
     <!-- Tombol Menu (Hamburger) -->
     <button id="menu-toggle" class="fixed top-4 right-4 z-50 bg-blue-900 text-white px-6 py-3 rounded-lg md:hidden">
         ☰
     </button>
 
     <!-- Sidebar -->
-    <div id="sidebar" class="fixed md:relative w-64 bg-blue-900 text-white min-h-screen p-5 transform -translate-x-full md:translate-x-0 transition-transform">
+    <div id="sidebar" class="md:relative w-full bg-blue-900 text-white min-h-screen p-5 transform -translate-x-full md:translate-x-0 transition-transform">
         <h2 class="text-base md:text-xl font-bold mb-6">Tracer Study</h2>
         <ul>
             <li class="mb-4">

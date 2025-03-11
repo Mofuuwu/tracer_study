@@ -1,9 +1,9 @@
 @include('components.start-html')
 
-<div class="flex bg-gray-100 min-h-screen">
+<div class="flex bg-gray-100 min-h-screen md:justify-end">
     @include('components.admin.sidebar')
 
-    <section class="w-full flex-1 p-6">
+    <section class="px-6 py-6 w-full md:w-[70%] lg:w-[80%] bg-gray-100 min-h-screen ">
         <h1 class="text-2xl font-bold">Kelola Kuisioner</h1>
         <p class="text-gray-600 mb-6">Pilih kuisioner untuk melihat dan mengelola data.</p>
         @if(session('success'))

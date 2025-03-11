@@ -11,10 +11,16 @@ class Kuisioner extends Model
     use HasFactory;
     protected $table = 'kuisioner';
     protected $guarded = [];
-    public function jawaban_mahasiswa () {
+    public function jawaban_mahasiswa()
+    {
         return $this->hasMany(JawabanMahasiswa::class, 'kuisioner_id');
     }
-    public function soal () {
+    public function soal()
+    {
         return $this->hasMany(Soal::class, 'kuisioner_id');
+    }
+    public function riwayat_pengisian_kuisioner()
+    {
+        return $this->hasMany(RiwayatPengisianKuisioner::class, 'kuisioner_id');
     }
 }

@@ -23,4 +23,9 @@ class JawabanMahasiswa extends Model
     public function pilihan() {
         return $this->belongsTo(PilihanJawaban::class, 'pilihan_id');
     }
+    public function riwayat_pengisian_kuisioner()
+    {
+        return $this->hasMany(RiwayatPengisianKuisioner::class, 'mahasiswa_id');
+    }
+
 }

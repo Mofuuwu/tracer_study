@@ -27,7 +27,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/data-akun', [UserViewController::class, 'data_akun'])->name('user.data-akun');
         Route::get('/data-mahasiswa', [UserViewController::class, 'data_mahasiswa'])->name('user.data-mahasiswa');
         Route::get('/kuisioner', [UserViewController::class, 'kuisioner'])->name('user.kuisioner');
-        Route::get('kuisioner/jawab', [UserViewController::class, 'kuis']);
+        Route::get('/kuisioner/isi/{id}', [UserViewController::class, 'isi_kuisioner'])->name('user.kuisioner.isi');
+        Route::post('/kuisioner/submit', [KuisionerController::class, 'submit_kuisioner'])->name('user.kuisioner.submit');
+        Route::get('/kuisioner/lihat-jawaban/{id}', [KuisionerController::class, 'lihat_jawaban'])->name('user.kuisioner.lihat-jawaban');
 
         //Auth
         Route::post('/data-akun', [UserAuthController::class, 'edit_data_akun'])->name('user.edit.data-akun');
@@ -51,8 +53,8 @@ Route::middleware('auth')->group(function () {
         Route::put('/admin/kelola-kuisioner/update/judul/{id}', [KuisionerController::class, 'update_header_kuisioner'])->name('admin.kuisioner.edit_header');
         Route::delete('/admin/kelola-kuisioner/{id}/{soal_id}/hapus', [KuisionerController::class, 'hapus_soal'])->name('admin.kuisioner.soal.hapus');
 
-        Route::get('/admin/respon-kuisioner/id', [AdminViewController::class, 'lihat_siswa_merespons']);
-        Route::get('/admin/respon-kuisioner/id/siswa', [AdminViewController::class, 'lihat_respon_siswa']);
+        Route::get('/admin/respon-kuisioner/{id}', [AdminViewController::class, 'lihat_siswa_merespons'])->name('admin.respon-kuisioner.kuisioner.lihat');
+        Route::get('/admin/respon-kuisioner/{id}/{id_mahasiswa}', [AdminViewController::class, 'lihat_respon_siswa'])->name('admin.respon-kuisioner.siswa.lihat');
         Route::get('/admin/respon-kuisioner/id/statistik', [AdminViewController::class, 'lihat__statistik_respon']);
 
 

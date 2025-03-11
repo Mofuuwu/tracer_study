@@ -1,55 +1,70 @@
 @include('components.start-html')
 
-<div class="flex">
+<div class="flex md:justify-end">
     @include('components.user.sidebar')
-
-    <div class="flex-1 px-6 py-6 w-full bg-gray-100 min-h-screen flex gap-6 md:gap-0 md:flex-row flex-col md:justify-center">
-        <div class="w-full max-w-4xl bg-white shadow-lg rounded-lg p-6 border border-gray-300">
-            <div class="flex justify-between">
-                <h1 class="text-3xl font-bold text-gray-800 mb-4">Isi Kuisioner</h1>
-            <a href="{{ route('user.kuisioner') }}" class="cursor-pointer md:block hidden mb-4 bg-red-400 text-white px-4 py-2 rounded-lg shadow-md hover:bg-gray-500 transition">
+    <div class="px-6 py-6 w-full md:w-[70%] lg:w-[80%] bg-gray-100 min-h-screen ">
+        <div class="flex justify-between flex-col md:flex-row">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-800">{{ $kuisioner->judul }}</h1>
+                <p class="text-gray-600 mb-3">{{ $kuisioner->deskripsi ? $kuisioner->deskripsi : 'Tidak ada deskripsi' }}</p>
+                <p class="text-sm italic text-gray-600">Dibuka Pada: {{ \Carbon\Carbon::parse($kuisioner->dibuka_pada)->translatedFormat('l, d F Y') }}</p>
+                <p class="text-sm italic text-gray-600 mb-6">Ditutup Pada: {{ $kuisioner->ditutup_pada ? \Carbon\Carbon::parse($kuisioner->ditutup_pada)->translatedFormat('l, d F Y') : '-' }}</p>
+            </div>
+            <button
+                onclick="confirmExit()"
+                class="cursor-pointer h-fit mb-4 bg-red-400 text-white px-4 py-2 rounded-lg shadow-md hover:bg-gray-500 transition">
                 Kembali Ke Beranda
-            </a>
+            </button>
+        </div>
+            @if ($errors->any())
+            Error Memperbarui Data :
+            <div class="text-red-500 text-sm w-full mb-6">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
             </div>
-            
-            <p class="text-gray-600 mb-4">Jawablah semua pertanyaan dengan jujur.</p>
+            @endif
+            @if (session('error'))
+            <div class="alert alert-danger text-red-500 text-sm">
+                {{ session('error') }}
+            </div>
+            @endif
 
-            <!-- Container Soal -->
-            <div id="soal-container">
-                @foreach($pertanyaan as $index => $soal)
-                    <div class="soal hidden" data-index="{{ $index }}">
-                        <label class="block text-gray-700 font-semibold mb-2">{{ $index + 1 }}. {{ $soal }}</label>
-                        <textarea class="w-full p-3 border rounded-lg focus:ring focus:ring-blue-200 jawaban" data-index="{{ $index }}" rows="3"></textarea>
+        <!-- Form Kuisioner -->
+        <div class="w-full">
+            <form id="kuisionerForm" action="{{ route('user.kuisioner.submit') }}" method="POST">
+                @csrf
+                <input type="hidden" name="user_id" value="{{ Auth::user()->id }}">
+                <input type="hidden" name="kuisioner_id" value="{{ $kuisioner->id }}">
+
+                <!-- Loop Semua Soal dalam Satu Halaman -->
+                @foreach($soal as $index => $s)
+                <div class="mb-3 w-full bg-white shadow-lg rounded-lg p-6 border border-gray-300">
+                    <label class="block text-gray-700 font-semibold mb-2">{{ $index + 1 }}. {{ $s->pertanyaan }}</label>
+
+                    @if($s->tipe === 'isian')
+                    <textarea required name="jawaban[{{ $s->id }}]" class="w-full p-3 border rounded-lg focus:ring focus:ring-blue-200" rows="3"></textarea>
+                    @elseif($s->tipe === 'pilihan_ganda')
+                    @foreach($s->pilihan_jawaban as $opsi)
+                    <div class="flex items-center mb-2">
+                        <input required type="radio" id="jawaban-{{ $s->id }}-{{ $loop->index }}" name="jawaban[{{ $s->id }}]" class="mr-2" value="{{ $opsi->id }}">
+                        <label for="jawaban-{{ $s->id }}-{{ $loop->index }}" class="text-gray-700 cursor-pointer">{{ $opsi->opsi }}</label>
                     </div>
+                    @endforeach
+                    @endif
+                </div>
                 @endforeach
-            </div>
 
-            <!-- Navigasi Soal -->
-            <div class="flex justify-between items-center mt-6">
-                <button id="prevBtn" class="bg-gray-400 text-white px-4 py-2 rounded-lg shadow-md hover:bg-gray-500 transition" disabled>
-                    Back
-                </button>
-
-                <button id="nextBtn" class="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-700 transition">
-                    Next
-                </button>
-            </div>
-        </div>
-
-        <!-- Kotak Daftar Soal -->
-        <div class="lg:w-80 md:w-100 w-full md:ml-6 ml-0 bg-gray-200 p-4 rounded-lg shadow-md">
-            <h2 class="text-lg font-semibold text-gray-800 mb-4">Nomor Soal</h2>
-            <div id="nomor-container" class="grid md:grid-cols-5 sm:grid-cols-10 grid-cols-6 gap-2">
-                @foreach($pertanyaan as $index => $soal)
-                    <button class="nomor w-10 h-10 rounded bg-gray-300 hover:bg-gray-400 transition" data-index="{{ $index }}">
-                        {{ $index + 1 }}
+                <!-- Tombol Submit -->
+                <div class="flex justify-center mt-6">
+                    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-700 transition w-full">
+                        Submit
                     </button>
-                @endforeach
-            </div>
+                </div>
+            </form>
         </div>
-        <a href="{{ route('user.kuisioner') }}" class="cursor-pointer block md:hidden mb-4 bg-red-400 text-white px-4 py-2 rounded-lg shadow-md hover:bg-gray-500 transition" disabled>
-            Kembali Ke Beranda
-        </a>
     </div>
 </div>
 
@@ -58,58 +73,10 @@
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    $(document).ready(function() {
-        let totalSoal = $(".soal").length;
-        let currentSoal = 0;
-        let jawaban = {}; // Menyimpan jawaban pengguna
-
-        function updateSoal() {
-            $(".soal").addClass("hidden");
-            $(".soal[data-index='" + currentSoal + "']").removeClass("hidden");
-
-            $("#prevBtn").prop("disabled", currentSoal === 0);
-            $("#nextBtn").text(currentSoal === totalSoal - 1 ? "Submit" : "Next");
-
-            $(".nomor").removeClass("bg-blue-500 text-white"); // Reset warna nomor soal
-            $(".nomor[data-index='" + currentSoal + "']").addClass("bg-blue-500 text-white");
+    function confirmExit() {
+        if (confirm("Apakah Anda yakin ingin kembali ke beranda? Semua jawaban yang belum disimpan akan hilang.")) {
+            window.location.href = "{{ route('user.kuisioner') }}";
         }
+    }
 
-        function updateStatusNomor() {
-            $(".jawaban").each(function() {
-                let index = $(this).data("index");
-                if ($(this).val().trim() !== "") {
-                    $(".nomor[data-index='" + index + "']").addClass("bg-green-400").removeClass("bg-gray-300");
-                } else {
-                    $(".nomor[data-index='" + index + "']").addClass("bg-gray-300").removeClass("bg-green-400");
-                }
-            });
-        }
-
-        $(".nomor").click(function() {
-            currentSoal = $(this).data("index");
-            updateSoal();
-        });
-
-        $("#nextBtn").click(function() {
-            if (currentSoal < totalSoal - 1) {
-                currentSoal++;
-                updateSoal();
-            } else {
-                alert("Kuisioner telah disubmit!");
-            }
-        });
-
-        $("#prevBtn").click(function() {
-            if (currentSoal > 0) {
-                currentSoal--;
-                updateSoal();
-            }
-        });
-
-        $(".jawaban").on("input", function() {
-            updateStatusNomor();
-        });
-
-        updateSoal();
-    });
 </script>

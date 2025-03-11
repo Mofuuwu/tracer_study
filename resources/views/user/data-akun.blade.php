@@ -4,10 +4,10 @@ use Carbon\Carbon;
 
 @include('components.start-html')
 
-<div class="flex bg-gray-100">
+<div class="flex bg-gray-100 md:justify-end">
     @include('components.user.sidebar')
 
-    <section class="w-full">
+    <section class="px-6 py-6 w-full md:w-[70%] lg:w-[80%] bg-gray-100 min-h-screen ">
         <div class="flex-1 p-6">
             <h1 class="text-2xl font-bold">Data Akun</h1>
             <p class="text-gray-600">Berikut Data Untuk Akun Anda</p>
@@ -23,7 +23,7 @@ use Carbon\Carbon;
         <div class="flex-1 px-6 py-3 w-full min-h-screen">
 
             <!-- Grid 2 Kolom -->
-            <div class="w-full grid md:grid-cols-2 gap-6 grid-cols-1">
+            <div class="w-full grid lg:grid-cols-2 gap-6 grid-cols-1">
                 <!-- Kotak Kiri: Informasi Akun -->
                 <div class="bg-white shadow-lg rounded-lg p-6 border border-gray-300">
                     <h2 class="text-xl font-semibold mb-4 text-gray-700">Informasi Akun</h2>

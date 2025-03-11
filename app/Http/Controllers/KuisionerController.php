@@ -2,15 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\PilihanJawaban;
 use App\Models\Soal;
 use App\Models\Kuisioner;
 use Illuminate\Http\Request;
+use App\Models\PilihanJawaban;
+use App\Models\JawabanMahasiswa;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use App\Models\RiwayatPengisianKuisioner;
 
 class KuisionerController extends Controller
 {
-    public function tambah_kuisioner (Request $request) {
+    public function tambah_kuisioner(Request $request)
+    {
         Kuisioner::create([
             'judul' => $request->judul,
             'deskripsi' => $request->deskripsi,
@@ -20,32 +24,32 @@ class KuisionerController extends Controller
 
         return redirect()->back()->with('success', 'Kuisioner Telah Berhasil Dibuat');
     }
-  
+
     public function hapus_kuisioner($id)
-{
-    DB::beginTransaction(); // Memulai transaksi
+    {
+        DB::beginTransaction(); // Memulai transaksi
 
-    try {
-        $kuisioner = Kuisioner::findOrFail($id);
-        $soal = Soal::where('kuisioner_id', $id)->get();
+        try {
+            $kuisioner = Kuisioner::findOrFail($id);
+            $soal = Soal::where('kuisioner_id', $id)->get();
 
-        foreach ($soal as $s) {
-            if ($s->tipe == 'pilihan_ganda') {
-                PilihanJawaban::where('soal_id', $s->id)->delete();
+            foreach ($soal as $s) {
+                if ($s->tipe == 'pilihan_ganda') {
+                    PilihanJawaban::where('soal_id', $s->id)->delete();
+                }
+
+                $s->delete();
             }
 
-            $s->delete(); 
+            $kuisioner->delete();
+
+            DB::commit();
+            return redirect()->back()->with('success', 'Kuisioner Berhasil Dihapus!');
+        } catch (\Exception $e) {
+            DB::rollBack(); // Batalkan semua perubahan jika terjadi error
+            return redirect()->back()->with('error', 'Gagal menghapus kuisioner! ' . $e->getMessage());
         }
-
-        $kuisioner->delete();
-
-        DB::commit(); 
-        return redirect()->back()->with('success', 'Kuisioner Berhasil Dihapus!');
-    } catch (\Exception $e) {
-        DB::rollBack(); // Batalkan semua perubahan jika terjadi error
-        return redirect()->back()->with('error', 'Gagal menghapus kuisioner! ' . $e->getMessage());
     }
-}
 
     public function kelola_isi_kuisioner($id)
     {
@@ -77,14 +81,14 @@ class KuisionerController extends Controller
                         ]);
                     }
                 }
-                
             }
         }
 
         return redirect()->back()->with('success', 'Kuisioner berhasil diperbarui.');
     }
 
-    public function update_header_kuisioner(Request $request, $id) {
+    public function update_header_kuisioner(Request $request, $id)
+    {
         // Validasi input
         $request->validate([
             'judul' => 'required|string|max:255',
@@ -92,10 +96,10 @@ class KuisionerController extends Controller
             'dibuka_pada' => 'required|date',
             'ditutup_pada' => 'nullable|date|after_or_equal:dibuka_pada',
         ]);
-    
+
         // Ambil data kuisioner berdasarkan ID
         $kuisioner = Kuisioner::findOrFail($id);
-    
+
         // Update data
         $kuisioner->update([
             'judul' => $request->judul,
@@ -103,32 +107,89 @@ class KuisionerController extends Controller
             'dibuka_pada' => $request->dibuka_pada,
             'ditutup_pada' => $request->ditutup_pada,
         ]);
-    
+
         return redirect()->back()->with('success', 'Kuisioner berhasil diperbarui.');
     }
 
-    public function hapus_soal($id, $soal_id) {
-        DB::beginTransaction(); 
-    
+    public function hapus_soal($id, $soal_id)
+    {
+        DB::beginTransaction();
+
         try {
             $soal = Soal::where('kuisioner_id', $id)->where('id', $soal_id)->first();
-    
+
             if (!$soal) {
                 return back()->with('error', 'Soal tidak ditemukan!');
             }
-    
+
             if ($soal->tipe == 'pilihan_ganda') {
                 PilihanJawaban::where('soal_id', $soal_id)->delete();
             }
-    
+
             $soal->delete();
-    
-            DB::commit(); 
+
+            DB::commit();
             return back()->with('success', 'Soal berhasil dihapus!');
         } catch (\Exception $e) {
-            DB::rollBack(); 
+            DB::rollBack();
             return back()->with('error', 'Gagal menghapus soal! ' . $e->getMessage());
         }
+    }
+
+    public function submit_kuisioner(Request $request) {
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'kuisioner_id' => 'required|exists:kuisioner,id',
+            'jawaban' => 'required|array',
+        ]);
+
+        DB::beginTransaction();
+        try {
+            $mahasiswaId = $request->user_id;
+            $kuisionerId = $request->kuisioner_id;
+
+            // Simpan riwayat pengisian kuisioner
+            RiwayatPengisianKuisioner::create([
+                'mahasiswa_id' => $mahasiswaId,
+                'kuisioner_id' => $kuisionerId,
+            ]);
+
+            // Simpan jawaban mahasiswa
+            foreach ($request->jawaban as $soalId => $jawaban) {
+                $isPilihanGanda = is_numeric($jawaban); 
+
+                JawabanMahasiswa::create([
+                    'kuisioner_id' => $kuisionerId,
+                    'soal_id' => $soalId,
+                    'mahasiswa_id' => $mahasiswaId,
+                    'pilihan_id' => $isPilihanGanda ? $jawaban : null,
+                    'jawaban_isian' => $isPilihanGanda ? null : $jawaban,
+                ]);
+            }
+
+            DB::commit();
+
+            return redirect()->route('user.kuisioner')->with('success', 'Kuisioner berhasil disubmit!');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Terjadi kesalahan, silakan coba lagi.');
+        }
+    }
+
+    public function lihat_jawaban($id) {
+        $kuisioner = Kuisioner::with('soal.pilihan_jawaban')->findOrFail($id);
+    
+        // Ambil jawaban pengguna berdasarkan ID user dan kuisioner
+        $jawabanUser = JawabanMahasiswa::where('mahasiswa_id', Auth::id()) // Ganti user_id ke mahasiswa_id
+                            ->where('kuisioner_id', $id)
+                            ->get()
+                            ->mapWithKeys(function ($item) {
+                                return [
+                                    $item->soal_id => $item->pilihan_id ?? $item->jawaban_isian ?? 'Belum dijawab'
+                                ];
+                            });
+    
+        return view('user.kuisioner.lihat-jawaban', compact('kuisioner', 'jawabanUser'));
     }
     
 }
