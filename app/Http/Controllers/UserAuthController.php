@@ -12,7 +12,6 @@ class UserAuthController extends Controller
     public function edit_data_akun(Request $request)
     {
         $user = Auth::user(); 
-
         $validatedRequest = $request->validate([
             'email' => [
                 'email',
@@ -20,15 +19,11 @@ class UserAuthController extends Controller
             ],
             'password' => ['nullable', 'min:8', 'confirmed'], 
         ]);
-
         $user->email = $validatedRequest['email'];
-
         if (!empty($validatedRequest['password'])) { 
             $user->password = bcrypt($validatedRequest['password']);
         }
-
         $user->save(); 
-
         return redirect()->back()->with('success', 'Data akun berhasil diperbarui!');
     }
 
@@ -56,20 +51,14 @@ class UserAuthController extends Controller
 
         DB::beginTransaction();
         try {
-            // Update data mahasiswa
             $mahasiswa = Mahasiswa::where('user_id', $user_id)->firstOrFail();
             $mahasiswa->update($validatedRequest);
-    
-            // Update email user di tabel users
             $user = Auth::user();
             $user->email = $validatedRequest['email'];
             $user->save();
-    
-            // Commit transaksi jika semuanya berhasil
             DB::commit();
             return redirect()->back()->with('success', 'Data mahasiswa berhasil diperbarui.');
         } catch (\Exception $e) {
-            // Rollback jika terjadi error
             DB::rollBack();
             return redirect()->back()->with('error', 'Terjadi kesalahan saat memperbarui data.');
         }

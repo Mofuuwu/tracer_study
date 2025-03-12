@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('kuisioner', function (Blueprint $table) {
             $table->id();
-            $table->string('judul'); // Judul kuisioner
-            $table->text('deskripsi')->nullable(); // Deskripsi kuisioner (opsional)
-            $table->timestamp('dibuka_pada')->nullable(); // Tanggal mulai bisa diisi
-            $table->timestamp('ditutup_pada')->nullable(); // Tanggal batas pengisian
+            $table->string('judul'); 
+            $table->text('deskripsi')->nullable(); 
+            $table->timestamp('dibuka_pada')->nullable(); 
+            $table->timestamp('ditutup_pada')->nullable(); 
             $table->timestamps();
         });
     }

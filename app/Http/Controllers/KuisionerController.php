@@ -21,32 +21,26 @@ class KuisionerController extends Controller
             'dibuka_pada' => $request->dibuka_pada,
             'ditutup_pada' => $request->ditutup_pada,
         ]);
-
         return redirect()->back()->with('success', 'Kuisioner Telah Berhasil Dibuat');
     }
 
     public function hapus_kuisioner($id)
     {
-        DB::beginTransaction(); // Memulai transaksi
-
+        DB::beginTransaction(); 
         try {
             $kuisioner = Kuisioner::findOrFail($id);
             $soal = Soal::where('kuisioner_id', $id)->get();
-
             foreach ($soal as $s) {
                 if ($s->tipe == 'pilihan_ganda') {
                     PilihanJawaban::where('soal_id', $s->id)->delete();
                 }
-
                 $s->delete();
             }
-
             $kuisioner->delete();
-
             DB::commit();
             return redirect()->back()->with('success', 'Kuisioner Berhasil Dihapus!');
         } catch (\Exception $e) {
-            DB::rollBack(); // Batalkan semua perubahan jika terjadi error
+            DB::rollBack(); 
             return redirect()->back()->with('error', 'Gagal menghapus kuisioner! ' . $e->getMessage());
         }
     }
@@ -64,7 +58,6 @@ class KuisionerController extends Controller
             'soal.*' => 'required|string',
             'tipe_soal.*' => 'required|in:isian,pilihan_ganda',
         ]);
-
         $kuisioner = Kuisioner::findOrFail($id);
         if ($request->has('soal')) {
             foreach ($request->soal as $index => $pertanyaan) {
@@ -73,7 +66,6 @@ class KuisionerController extends Controller
                     'pertanyaan' => $pertanyaan,
                     'tipe' => $request->tipe_soal[$index],
                 ]);
-
                 if ($request->tipe_soal[$index] === 'pilihan_ganda' && isset($request->pilihan[$index])) {
                     foreach ($request->pilihan[$index] as $pilihan) {
                         $soal->pilihan_jawaban()->create([
@@ -83,51 +75,39 @@ class KuisionerController extends Controller
                 }
             }
         }
-
         return redirect()->back()->with('success', 'Kuisioner berhasil diperbarui.');
     }
 
     public function update_header_kuisioner(Request $request, $id)
     {
-        // Validasi input
         $request->validate([
             'judul' => 'required|string|max:255',
             'deskripsi' => 'nullable|string',
             'dibuka_pada' => 'required|date',
             'ditutup_pada' => 'nullable|date|after_or_equal:dibuka_pada',
         ]);
-
-        // Ambil data kuisioner berdasarkan ID
         $kuisioner = Kuisioner::findOrFail($id);
-
-        // Update data
         $kuisioner->update([
             'judul' => $request->judul,
             'deskripsi' => $request->deskripsi,
             'dibuka_pada' => $request->dibuka_pada,
             'ditutup_pada' => $request->ditutup_pada,
         ]);
-
         return redirect()->back()->with('success', 'Kuisioner berhasil diperbarui.');
     }
 
     public function hapus_soal($id, $soal_id)
     {
         DB::beginTransaction();
-
         try {
             $soal = Soal::where('kuisioner_id', $id)->where('id', $soal_id)->first();
-
             if (!$soal) {
                 return back()->with('error', 'Soal tidak ditemukan!');
             }
-
             if ($soal->tipe == 'pilihan_ganda') {
                 PilihanJawaban::where('soal_id', $soal_id)->delete();
             }
-
             $soal->delete();
-
             DB::commit();
             return back()->with('success', 'Soal berhasil dihapus!');
         } catch (\Exception $e) {
@@ -142,22 +122,16 @@ class KuisionerController extends Controller
             'kuisioner_id' => 'required|exists:kuisioner,id',
             'jawaban' => 'required|array',
         ]);
-
         DB::beginTransaction();
         try {
             $mahasiswaId = $request->user_id;
             $kuisionerId = $request->kuisioner_id;
-
-            // Simpan riwayat pengisian kuisioner
             RiwayatPengisianKuisioner::create([
                 'mahasiswa_id' => $mahasiswaId,
                 'kuisioner_id' => $kuisionerId,
             ]);
-
-            // Simpan jawaban mahasiswa
             foreach ($request->jawaban as $soalId => $jawaban) {
                 $isPilihanGanda = is_numeric($jawaban); 
-
                 JawabanMahasiswa::create([
                     'kuisioner_id' => $kuisionerId,
                     'soal_id' => $soalId,
@@ -166,9 +140,7 @@ class KuisionerController extends Controller
                     'jawaban_isian' => $isPilihanGanda ? null : $jawaban,
                 ]);
             }
-
             DB::commit();
-
             return redirect()->route('user.kuisioner')->with('success', 'Kuisioner berhasil disubmit!');
         } catch (\Exception $e) {
             DB::rollBack();
@@ -178,8 +150,6 @@ class KuisionerController extends Controller
 
     public function lihat_jawaban($id) {
         $kuisioner = Kuisioner::with('soal.pilihan_jawaban')->findOrFail($id);
-    
-        // Ambil jawaban pengguna berdasarkan ID user dan kuisioner
         $jawabanUser = JawabanMahasiswa::where('mahasiswa_id', Auth::id()) // Ganti user_id ke mahasiswa_id
                             ->where('kuisioner_id', $id)
                             ->get()
@@ -188,8 +158,46 @@ class KuisionerController extends Controller
                                     $item->soal_id => $item->pilihan_id ?? $item->jawaban_isian ?? 'Belum dijawab'
                                 ];
                             });
-    
         return view('user.kuisioner.lihat-jawaban', compact('kuisioner', 'jawabanUser'));
+    }
+    
+    public function lihat_statistik($id)
+    {
+        $kuisioner = Kuisioner::findOrFail($id);
+        $total_responden = RiwayatPengisianKuisioner::where('kuisioner_id', $id)
+            ->distinct('mahasiswa_id')
+            ->count();
+        $pilihan_ganda = Soal::where('kuisioner_id', $id)
+            ->where('tipe', 'pilihan_ganda')
+            ->with('pilihan_jawaban')
+            ->get();
+        $statistik_pilihan = [];
+        foreach ($pilihan_ganda as $pertanyaan) {
+            $data_opsi = [];
+            foreach ($pertanyaan->pilihan_jawaban as $opsi) {
+                $jumlah_pilih = JawabanMahasiswa::where('soal_id', $pertanyaan->id)
+                    ->where('pilihan_id', $opsi->id)
+                    ->count();
+                $data_opsi[] = [
+                    'teks' => $opsi->opsi,
+                    'jumlah' => $jumlah_pilih
+                ];
+            }
+            $statistik_pilihan[] = [
+                'pertanyaan' => $pertanyaan->pertanyaan,
+                'opsi' => $data_opsi
+            ];
+        }
+        $jawaban_isian = Soal::where('kuisioner_id', $id)
+            ->where('tipe', 'isian')
+            ->with('jawaban_mahasiswa')
+            ->get();
+        return view('admin.kuisioner.view-statistik', compact(
+            'kuisioner',
+            'total_responden',
+            'statistik_pilihan',
+            'jawaban_isian'
+        ));
     }
     
 }

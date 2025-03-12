@@ -15,16 +15,38 @@
         @endif
 
         <div id="kuisioner-view" class="bg-white p-6 rounded-lg shadow-md mt-6">
-            <h1 class="text-xl font-bold text-sky-600">{{ $kuisioner->judul }}</h1>
-            <p class="text-gray-600 mb-3">Deskripsi : {{ $kuisioner->deskripsi ? $kuisioner->deskripsi : 'Tidak ada deskripsi' }}</p>
-            <p class="text-sm italic text-gray-800 opacity-70">Dibuka Pada : {{ \Carbon\Carbon::parse($kuisioner->dibuka_pada)->translatedFormat('l, d F Y')}}</p>
-            <p class="text-sm italic text-gray-800 opacity-70">Ditutup Pada : {{ $kuisioner->ditutup_pada ? \Carbon\Carbon::parse($kuisioner->ditutup_pada)->translatedFormat('l, d F Y') : '-'}}</p>
+    <h1 class="text-xl font-bold text-sky-600">{{ $kuisioner->judul }}</h1>
+    <p class="text-gray-600 mb-3">Deskripsi : {{ $kuisioner->deskripsi ? $kuisioner->deskripsi : 'Tidak ada deskripsi' }}</p>
+    <p class="text-sm italic text-gray-400">Dibuka Pada : {{ \Carbon\Carbon::parse($kuisioner->dibuka_pada)->translatedFormat('l, d F Y')}}</p>
+    <p class="text-sm italic text-gray-400">Ditutup Pada : {{ $kuisioner->ditutup_pada ? \Carbon\Carbon::parse($kuisioner->ditutup_pada)->translatedFormat('l, d F Y') : '-'}}</p>
 
-            <!-- Tombol Edit -->
-            <button id="edit-btn" class=" cursor-pointer mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg shadow hover:bg-blue-700 transition">
-                Edit
-            </button>
-        </div>
+    <!-- Status Kuisioner -->
+    <p class="text-sm font-semibold mt-2">
+        <span class="text-gray-600">Status:</span> 
+        <span class="
+            @if (now() < $kuisioner->dibuka_pada) text-yellow-600
+            @elseif (now() > $kuisioner->ditutup_pada) text-red-600
+            @else text-green-600
+            @endif">
+            @if (now() < $kuisioner->dibuka_pada)
+                Belum Dibuka
+            @elseif (now() > $kuisioner->ditutup_pada)
+                Ditutup
+            @else
+                Dibuka
+            @endif
+        </span>
+        <p class="text-gray-600 text-sm italic">
+        N.B : Buat status Kuisioner ke belum dibuka agar Kuisioner ini tidak ditampilkan ke User terlebih dahulu sebelum selesai diedit
+        </p>
+    </p>
+
+    <!-- Tombol Edit -->
+    <button id="edit-btn" class=" cursor-pointer mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg shadow hover:bg-blue-700 transition">
+        Edit
+    </button>
+</div>
+
 
         <!-- FORM EDIT (DIPAKSA HIDDEN AWALNYA) -->
         <form id="kuisioner-form" action="{{ route('admin.kuisioner.edit_header', $kuisioner->id) }}" method="POST" class="hidden bg-white p-6 rounded-lg shadow-md mt-6">

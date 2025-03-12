@@ -33,7 +33,7 @@
                 </div>
             </div>
         </div>
-        @else
+        @elseif ($mahasiswa->verified === 1)
         <div class="flex-1 px-6 py-6 w-full min-h-screen">
 
             <!-- Kuisioner yang BELUM diisi -->

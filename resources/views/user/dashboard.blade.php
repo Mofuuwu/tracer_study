@@ -14,6 +14,23 @@
                 </a>
             </div>
         </div>
+        @if (Auth::user()->mahasiswa->verified === 0)
+        <div class="px-6">
+            <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4" role="alert">
+                <div class="flex">
+                    <!-- Ikon Peringatan -->
+                    <svg class="w-6 h-6 text-red-600 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.29 3.86a1 1 0 011.42 0l7.29 7.29a1 1 0 010 1.42l-7.29 7.29a1 1 0 01-1.42 0l-7.29-7.29a1 1 0 010-1.42l7.29-7.29z" />
+                    </svg>
+
+                    <div>
+                        <p class="font-bold">Akun Belum Terverifikasi</p>
+                        <p>Silahkan isi data Mahasiswa atau tunggu akun diverifikasi oleh Admin sebelum mengisi kuisioner.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @elseif(Auth::user()->mahasiswa->verified === 1)
 
         <div class="flex-1 px-6 py-3 w-full min-h-screen">
 
@@ -40,38 +57,39 @@
                 <h2 class="text-xl font-semibold text-gray-700 mb-4">Kuisioner yang Belum Dijawab</h2>
 
                 @if($kuisionerBelumDijawab->isEmpty())
-                    <p class="text-gray-600">Semua kuisioner sudah dijawab.</p>
+                <p class="text-gray-600">Semua kuisioner sudah dijawab.</p>
                 @else
-                    <div class="overflow-x-auto">
-                        <table class="w-full border-collapse border border-gray-300 min-w-[600px]">
-                            <thead>
-                                <tr class="bg-gray-200">
-                                    <th class="border border-gray-300 px-4 py-2 text-left">No</th>
-                                    <th class="border border-gray-300 px-4 py-2 text-left">Judul Kuisioner</th>
-                                    <th class="border border-gray-300 px-4 py-2 text-left">Tanggal Dibuat</th>
-                                    <th class="border border-gray-300 px-4 py-2 text-center">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($kuisionerBelumDijawab as $index => $kuisioner)
-                                <tr>
-                                    <td class="border border-gray-300 px-4 py-2">{{ $index + 1 }}</td>
-                                    <td class="border border-gray-300 px-4 py-2">{{ $kuisioner->judul }}</td>
-                                    <td class="border border-gray-300 px-4 py-2">{{ \Carbon\Carbon::parse($kuisioner->created_at)->format('d M Y') }}</td>
-                                    <td class="border border-gray-300 px-4 py-2 text-center">
-                                        <a href="{{ route('user.kuisioner.isi', $kuisioner->id) }}" class="bg-blue-600 text-white px-3 py-2 rounded-lg shadow-md hover:bg-blue-700 transition">
-                                            Jawab
-                                        </a>
-                                    </td>
-                                </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full border-collapse border border-gray-300 min-w-[600px]">
+                        <thead>
+                            <tr class="bg-gray-200">
+                                <th class="border border-gray-300 px-4 py-2 text-left">No</th>
+                                <th class="border border-gray-300 px-4 py-2 text-left">Judul Kuisioner</th>
+                                <th class="border border-gray-300 px-4 py-2 text-left">Tanggal Dibuat</th>
+                                <th class="border border-gray-300 px-4 py-2 text-center">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($kuisionerBelumDijawab as $index => $kuisioner)
+                            <tr>
+                                <td class="border border-gray-300 px-4 py-2">{{ $index + 1 }}</td>
+                                <td class="border border-gray-300 px-4 py-2">{{ $kuisioner->judul }}</td>
+                                <td class="border border-gray-300 px-4 py-2">{{ \Carbon\Carbon::parse($kuisioner->created_at)->format('d M Y') }}</td>
+                                <td class="border border-gray-300 px-4 py-2 text-center">
+                                    <a href="{{ route('user.kuisioner.isi', $kuisioner->id) }}" class="bg-blue-600 text-white px-3 py-2 rounded-lg shadow-md hover:bg-blue-700 transition">
+                                        Jawab
+                                    </a>
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
                 @endif
             </div>
 
         </div>
+        @endif
     </section>
 </div>
 

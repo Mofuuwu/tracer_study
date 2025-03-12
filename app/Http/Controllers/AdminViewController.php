@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Soal;
 use App\Models\Kuisioner;
 use App\Models\Mahasiswa;
 use Illuminate\Http\Request;
@@ -31,12 +32,10 @@ class AdminViewController extends Controller
             ->count();
 
         $kuisioner_diisi = RiwayatPengisianKuisioner::distinct('mahasiswa_id')->count();
-
         $log_aktivitas = RiwayatPengisianKuisioner::with('mahasiswa', 'kuisioner')
             ->orderBy('created_at', 'desc')
             ->limit(10)
             ->get();
-
         $alumni = Mahasiswa::where('verified', 1)->where('status', 'lulus')->count();
         $mahasiswa_aktif = Mahasiswa::where('verified', 1)->where('status', 'aktif')->count();
         $total_kuisioner = Kuisioner::count();
@@ -60,7 +59,6 @@ class AdminViewController extends Controller
             ->whereNotNull('status')
             ->whereNotNull('pekerjaan')
             ->get();
-
         return view('admin.verifikasi-mahasiswa', compact('mahasiswa_menunggu_verifikasi'));
     }
     public function data_mahasiswa()
@@ -75,47 +73,46 @@ class AdminViewController extends Controller
     }
     public function kelola_kuisioner()
     {
-        $kuisioner = Kuisioner::all();
+        $kuisioner = Kuisioner::all()->map(function ($k) {
+            $sekarang = now();
+            if ($sekarang < $k->dibuka_pada) {
+                $k->status = 'Belum Dibuka';
+            } elseif ($sekarang > $k->ditutup_pada) {
+                $k->status = 'Ditutup';
+            } else {
+                $k->status = 'Dibuka';
+            }
+            return $k;
+        });
         return view('admin.kelola-kuisioner', compact('kuisioner'));
     }
-    public function respon_kuisioner()
-{
-    $kuisioners = Kuisioner::all(); 
 
-    return view('admin.respon-kuisioner', compact('kuisioners'));
-}
+    public function respon_kuisioner()
+    {
+        $kuisioners = Kuisioner::all();
+        return view('admin.respon-kuisioner', compact('kuisioners'));
+    }
     public function lihat_siswa_merespons($id)
     {
         $kuisioner = Kuisioner::findOrFail($id);
         $mahasiswa_respon = RiwayatPengisianKuisioner::where('kuisioner_id', $id)
-        ->join('mahasiswa', 'riwayat_pengisian_kuisioner.mahasiswa_id', '=', 'mahasiswa.id')
-        ->select('mahasiswa.id', 'mahasiswa.nama', 'mahasiswa.nim')
-        ->get();
-
+            ->join('mahasiswa', 'riwayat_pengisian_kuisioner.mahasiswa_id', '=', 'mahasiswa.id')
+            ->select('mahasiswa.id', 'mahasiswa.nama', 'mahasiswa.nim')
+            ->get();
         return view('admin.kuisioner.list-respon', compact('mahasiswa_respon', 'id', 'kuisioner'));
     }
     public function lihat_respon_siswa($id, $id_mahasiswa)
     {
-        // Ambil data mahasiswa
         $mahasiswa = Mahasiswa::findOrFail($id_mahasiswa);
-
         $kuisioner = Kuisioner::with('soal.pilihan_jawaban')->findOrFail($id);
-    
-        
-        $jawabanUser = JawabanMahasiswa::where('mahasiswa_id', $id_mahasiswa) 
-                            ->where('kuisioner_id', $id)
-                            ->get()
-                            ->mapWithKeys(function ($item) {
-                                return [
-                                    $item->soal_id => $item->pilihan_id ?? $item->jawaban_isian ?? 'Belum dijawab'
-                                ];
-                            });
-    
+        $jawabanUser = JawabanMahasiswa::where('mahasiswa_id', $id_mahasiswa)
+            ->where('kuisioner_id', $id)
+            ->get()
+            ->mapWithKeys(function ($item) {
+                return [
+                    $item->soal_id => $item->pilihan_id ?? $item->jawaban_isian ?? 'Belum dijawab'
+                ];
+            });
         return view('admin.kuisioner.view-response-kuisioner', compact('mahasiswa', 'kuisioner', 'jawabanUser'));
-    }
-
-    public function lihat__statistik_respon()
-    {
-        return view('admin.kuisioner.view-statistik');
     }
 }

@@ -15,7 +15,6 @@ class VerifikasiMahasiswa extends Controller
         $mahasiswa = Mahasiswa::where('nim', $request->nim)->firstOrFail();
         $mahasiswa->verified = 1;
         $mahasiswa->save();
-
         return redirect()->route('admin.verifikasi-mahasiswa')->with('success', 'Mahasiswa Berhasil Di Verifikasi');
     }
 }

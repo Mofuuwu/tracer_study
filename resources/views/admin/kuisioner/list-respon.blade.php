@@ -19,7 +19,7 @@
 
         <!-- Tombol Lihat Statistik -->
         <div class="mb-6">
-            <a href=""
+            <a href="{{ route('admin.respon-kuisioner.statistik', $kuisioner->id) }}"
                 class="block bg-blue-600 text-white text-center font-semibold py-3 px-6 rounded-lg shadow-md hover:bg-blue-700 transition">
                 📊 Lihat Statistik
             </a>

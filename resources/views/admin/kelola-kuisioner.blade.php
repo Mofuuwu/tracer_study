@@ -59,6 +59,7 @@
                         <th class="border border-gray-300 px-4 py-2 text-left">No</th>
                         <th class="border border-gray-300 px-4 py-2 text-left">Judul Kuisioner</th>
                         <th class="border border-gray-300 px-4 py-2 text-left">Tanggal Dibuat</th>
+                        <th class="border border-gray-300 px-4 py-2 text-left">Status</th>
                         <th class="border border-gray-300 px-4 py-2 text-center">Aksi</th>
                     </tr>
                 </thead>
@@ -66,11 +67,20 @@
                     @if ($kuisioner->isEmpty())
                     <td colspan="7" class="text-center border border-gray-300 px-4 py-4">Tidak ada data Kuisioner.</td>
                     @else
-                    @foreach ($kuisioner as $k )
+                    @foreach ($kuisioner as $k)
                     <tr class="hover:bg-gray-100">
                         <td class="border border-gray-300 px-4 py-2">{{ $loop->iteration }}</td>
                         <td class="border border-gray-300 px-4 py-2">{{ $k->judul }}</td>
                         <td class="border border-gray-300 px-4 py-2">{{ \Carbon\Carbon::parse($k->created_at)->translatedFormat('l, d F Y | H:i')}}</td>
+                        <td class="border border-gray-300 px-4 py-2">
+                            <span class="
+                    @if ($k->status === 'Dibuka') text-green-600 
+                    @elseif ($k->status === 'Belum Dibuka') text-yellow-600 
+                    @else text-red-600 
+                    @endif">
+                                {{ $k->status }}
+                            </span>
+                        </td>
                         <td class="border border-gray-300 px-4 py-2 text-center gap-2 flex justify-center">
                             <a href="{{ route('admin.kuisioner.edit', $k->id) }}"
                                 class="bg-blue-600 text-white px-3 py-2 rounded-lg shadow-md hover:bg-blue-700 transition cursor-pointer">
@@ -88,6 +98,7 @@
                     @endforeach
                     @endif
                 </tbody>
+
             </table>
         </div>
     </section>

@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
-
 use function Laravel\Prompts\error;
 
 class AuthController extends Controller
@@ -28,13 +27,10 @@ class AuthController extends Controller
             'email' => 'required|email',
             'password' => 'required|min:6',
         ]);
-
-        // Cek apakah user valid
         if (Auth::attempt(['email' => $validatedRequest['email'], 'password' => $validatedRequest['password']])) {
             $request->session()->regenerate();
             return redirect()->route('user.dashboard')->with('success', 'Login berhasil!');
         }
-
         return back()->with('error', 'Login Gagal, Email Atau Password Salah');
     }
 
@@ -46,27 +42,21 @@ class AuthController extends Controller
             'email' => 'required|email|unique:users',
             'password' => 'required|min:8|confirmed',
         ]);
-
-        DB::beginTransaction(); // Mulai transaksi
-
+        DB::beginTransaction(); 
         try {
-
             $user = User::create([
                 'email' => $validatedRequest['email'],
                 'password' => bcrypt($validatedRequest['password'])
             ]);
-
             Mahasiswa::create([
                 'user_id' => $user->id,
                 'nama' => $validatedRequest['nama'],
                 'email' => $validatedRequest['email'],
             ]);
-
-            DB::commit(); // Simpan perubahan ke database
-
+            DB::commit(); 
             return redirect()->route('login')->with('success', 'Registrasi berhasil, silakan login!');
         } catch (\Exception $e) {
-            DB::rollBack(); // Batalkan semua perubahan jika terjadi error
+            DB::rollBack(); 
             return back()->with('error', 'Registrasi gagal, silakan coba lagi.');
         }
     }
@@ -74,10 +64,8 @@ class AuthController extends Controller
     public function logout(Request $request)
     {
         Auth::logout();
-
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-
         return redirect()->route('login')->with('success', 'Anda telah logout.');
     }
 }
