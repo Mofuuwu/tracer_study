@@ -4,11 +4,13 @@
     @include('components.admin.sidebar')
 
     <div class="px-6 py-6 w-full md:w-[70%] lg:w-[80%] bg-gray-100 min-h-screen ">
-        <h1 class="text-2xl font-bold text-gray-800 mb-4">Dashboard Admin</h1>
-        <div class="mt-6 flex justify-end">
-            <a href="{{ route('logout') }}" class="bg-red-600 text-white px-5 py-3 rounded-lg shadow-md hover:bg-red-700 transition">
-                Logout
-            </a>
+        <div class="flex justify-between items-center mb-4">
+            <h1 class="text-2xl font-bold text-gray-800">Dashboard Admin</h1>
+            <div class="flex justify-end items-center">
+                <a href="{{ route('logout') }}" class="bg-red-600 text-white px-5 py-3 rounded-lg shadow-md hover:bg-red-700 transition">
+                    Logout
+                </a>
+            </div>
         </div>
 
         <!-- Ringkasan Data -->
@@ -66,7 +68,7 @@
                             <td class="p-2 border">{{ $log->created_at->translatedFormat('l, d F Y | H:i') }}</td>
                             <td class="p-2 border">{{ $log->mahasiswa->nama ?? 'Tidak Diketahui' }}</td>
                             <td class="p-2 border">{{ $log->kuisioner->judul ?? 'Tanpa Judul' }}</td>
-                        </tr> 
+                        </tr>
                         @endforeach
                     </tbody>
 
